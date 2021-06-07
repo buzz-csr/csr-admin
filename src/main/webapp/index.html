@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr" ng-app="memberModule">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />    
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/crew.css">
+</head>
+<body ng-controller="memberCtrl" class="container">
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">CSR 2</a>
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>      
+      
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" ng-class="isPageActive('rouge')">
+              <a class="nav-link" ng-class="isPageActive('rouge')" ng-click="changeCrew('rouge')" href="#">Equipe Rouge</span></a>
+            </li>
+            <li class="nav-item" ng-class="isPageActive('orange')">
+              <a class="nav-link" ng-class="isPageActive('orange')" ng-click="changeCrew('orange')" href="#">Equipe Orange</span></a>
+            </li>
+            <li class="nav-item" ng-class="isPageActive('verte')">
+              <a class="nav-link" ng-class="isPageActive('verte')" ng-click="changeCrew('verte')" href="#">Equipe Verte</span></a>
+            </li>
+        </ul>
+      </div>
+    </nav>
+    
+    <div ng-show="loading" class="loading"></div>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" ng-class="isTabActive('players')" ng-click="changeTab('players')" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Joueurs</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" ng-class="isTabActive('crews')" ng-click="changeTab('crews')" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Equipes</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" ng-class="isTabActive('wildcards')" ng-click="changeTab('wildcards')" id="wildcards-tab" data-toggle="tab" href="#wildcards" role="tab" aria-controls="wildcards" aria-selected="false">Jokers</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" ng-class="isTabActive('events')" ng-click="changeTab('events');loadScoreEvents();" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false">Evénements</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" ng-class="isTabActive('tchat')" ng-click="changeTab('tchat');loadConversations();" id="tchat-tab" data-toggle="tab" href="#tchat" role="tab" aria-controls="tchat" aria-selected="false">Tchat</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade" ng-class="isTabPaneActive('players')" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div ng-repeat="m in players" class="content row data-line">
+              <div class="col-md-1 top10">{{m.rank}}</div>
+              <div class="col-md-1 top10"><img ng-show="m.role == 'ADMIN'" src="images/admin.png" width="25"></img><img ng-show="m.role == 'LEADER'" src="images/leader.png" width="25"></img></div>
+              <div class="col-md-3 top10" ><p ng-bind-html="html(m.name)"></p></div>
+              <div class="col-md-1 top10 rank">{{m.level | number}}</div>
+              <div class="col-md-2 top10 token"><img src="images/token.png" width="15"></img>{{m.token | number}}</div>
+              <div class="col-md-3 top10 rp"><img src="images/RP.png" width="15"></img>{{m.points | number}}</div>
+            </div>
+      </div>
+      <div class="tab-pane fade" ng-class="isTabPaneActive('crews')" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div ng-repeat="m in crews" class="content row data-line" ng-class="isActiveCrew(m)" id={{crewId(m)}}>
+              <div class="col-md-1 top10">{{m.rank}}</div>
+              <div class="col-md-6 top10" ><p ng-bind-html="html(m.name)"></p></div>
+              <div class="col-md-5 top10 rp"><img src="images/RP.png" width="15"></img>{{m.points | number}}</div>
+            </div>
+      </div>
+      <div class="tab-pane fade" ng-class="isTabPaneActive('wildcards')" id="wildcards" role="tabpanel" aria-labelledby="wildcards-tab">
+            <div class="row">
+                <div ng-repeat="joker in wildcards" class="content col-md-4">
+                    <div class="card">
+                        <img class="card-img-top" src="images/wildcards/{{joker.rarity}}.png" alt="Card image">
+                        <div class="card-body">
+                            <p ng-class="cardTextClass(joker.paid, joker.cost)">{{joker.paid}} / {{joker.cost}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+      </div>
+      <div class="tab-pane fade" ng-class="isTabPaneActive('events')" id="events" role="tabpanel" aria-labelledby="events-tab">
+            <div class="row">
+                <div class="content col-lg-4 col-md-6 col-sm-12" ng-show="scoreEvents[2].length > 0">
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-3">Trophés</div>
+                        <div class="col-md-3">Place</div>
+                    </div>
+                    <div class="row data-line" ng-repeat="event1 in scoreEvents[2]">
+                        <div class="col-md-6 top10"><p ng-bind-html="html(event1.name)"></p></div>
+                        <div class="col-md-3 top10">{{event1.score}}</div>
+                        <div class="col-md-3 top10">{{event1.rank}}</div>
+                    </div>
+                </div>
+                <div class="content col-lg-4 col-md-6 col-sm-12" ng-show="scoreEvents[2].length == 0">
+                    -- Pas démarré --
+                </div>
+                <div class="content col-lg-4 col-md-6 col-sm-12" ng-show="scoreEvents[1].length > 0">
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-3">Trophés</div>
+                        <div class="col-md-3">Place</div>
+                    </div>
+                     <div class="row data-line" ng-repeat="event2 in scoreEvents[1]">
+                        <div class="col-md-6 top10"><p ng-bind-html="html(event2.name)"></p></div>
+                        <div class="col-md-3 top10">{{event2.score}}</div>
+                        <div class="col-md-3 top10">{{event2.rank}}</div>
+                    </div>
+                </div>
+                <div class="content col-lg-4 col-md-6 col-sm-12" ng-show="scoreEvents[1].length == 0">
+                    -- Pas démarré --
+                </div>
+                <div class="content col-lg-4 col-md-6 col-sm-12" ng-show="scoreEvents[0].length > 0">
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-3">Trophés</div>
+                        <div class="col-md-3">Place</div>
+                    </div>
+                     <div class="row data-line" ng-repeat="event3 in scoreEvents[0]">
+                        <div class="col-md-6 top10"><p ng-bind-html="html(event3.name)"></p></div>
+                        <div class="col-md-3 top10">{{event3.score}}</div>
+                        <div class="col-md-3 top10">{{event3.rank}}</div>
+                    </div>
+                </div>
+                <div class="content col-lg-4 col-md-6 col-sm-12" ng-show="scoreEvents[0].length == 0">
+                    -- Pas démarré --
+                </div>
+            </div>
+      </div>
+      <div class="tab-pane fade" ng-class="isTabPaneActive('tchat')" id="tchat" role="tabpanel" aria-labelledby="tchat-tab">
+            <div class="row">
+                <div class="col-lg-6 col-md-12"">
+                    <div class="tchat-card"  ng-repeat="t in conversations['chat_events'] track by $index">
+                        <div class="tchat-card-title">
+                            <div class="left">{{t.creationTime | date: 'dd-MM-yyyy hh:mm:ss'}}</div>
+                            <div class="right">{{playersName[t.zid]}}</div>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <hr>
+                        <p class="tchat-card-text">{{t.text}}</p>
+                    </div>                    
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="tchat-card"  ng-repeat="t in conversations['server_events'] track by $index" ng-class="t.meta.eventID">
+                        <div class="tchat-card-title">
+                            <div class="left">{{t.creationTime | date: 'dd-MM-yyyy hh:mm:ss'}}</div>
+                            <div class="right">{{playersName[t.zid]}}</div>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <hr>
+                        <div ng-show="t.meta.card && t.meta.card.paid_delta > 0">
+                            Pose de {{t.meta.card.paid_delta}} sur le joker <span ng-show="t.meta.card.rarity == 'bronze'">30%</span><span ng-show="t.meta.card.rarity == 'silver'">70%</span><span ng-show="t.meta.card.rarity == 'gold'">150%</span>
+                        </div>
+                        <div ng-show="t.meta.card && t.meta.card.paid_delta == 0">
+                            Activation du joker <span ng-show="t.meta.card.rarity == 'bronze'">30%</span><span ng-show="t.meta.card.rarity == 'silver'">70%</span><span ng-show="t.meta.card.rarity == 'gold'">150%</span>
+                        </div>
+                        <div ng-show="t.meta.eventID == 'PRIZE_TOKEN_CUP'">
+                            Coupe jetons terminée
+                        </div>
+                        <div ng-show="t.meta.eventID == 'PRIZE_CREW_CUP'">
+                            Coupe de Crew terminée
+                        </div>
+                    </div>       
+                </div>
+            </div>
+            
+      </div>      
+    </div>
+    
+    <script type="text/javascript" src="js/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script type="text/javascript" src="js/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="js/members-app.js"></script>
+</body>
+</html>

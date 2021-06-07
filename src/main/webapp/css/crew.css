@@ -1,0 +1,96 @@
+body {
+	background-color: black;
+	color: #FFFFFF;
+}
+nav {
+	margin-bottom: 20px;
+}
+.content {
+	font-weight: bold;
+}
+
+.data-line {
+	opacity: 0.8;
+	border-bottom: 1px solid #e2bb30;
+	margin: 0px;
+}
+
+.data-line:hover {
+	background: linear-gradient(#e2bb30, #000000);
+}
+
+.active-crew {
+	background: linear-gradient(#e2bb30, #000000);
+}
+
+.top10 {
+	padding-top: 10px;
+}
+
+.token {
+	color: #6ac41b;
+}
+
+.token img {
+	margin-right: 10px;
+}
+
+.rp {
+	color: #f97b04;
+}
+
+.rp img {
+	margin-right: 10px;
+}
+
+.rank {
+	color: #7db4ff;
+}
+
+.loading {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	opacity: 0.5;
+	background-image: url("../images/loading.gif");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.card {
+	border-color: #f9c71e !important;
+	margin: 10px;
+}
+.card-body {
+	background-color: black;
+	text-align: center;
+}
+.card-text-full {
+	color: #f9c71e;
+}
+.card-text {
+    color: #9de15a;
+}
+.tchat-card {
+	background: linear-gradient(#e2bb30, #bd9d28, #e2bb30);
+	border: 1px solid #e2bb30;
+	border-radius: 4px;
+	padding: 5px;
+	margin: 5px;
+}
+.tchat-card hr{
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+.tchat-card-title{
+	width: 100%;
+	font-size: 18px;
+}
+.tchat-card-title .left{
+    float: left;
+}
+.tchat-card-title .right{
+    float: right;
+}
+.WCARD_STATUS{
+    background: linear-gradient(#45db38, #008520, #45db38);
+}
