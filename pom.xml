@@ -111,6 +111,12 @@
             </properties>
         </profile>
         <profile>
+            <id>linux-local</id>
+            <properties>
+                <working.directory>/home/jerome/Documents/backupTest</working.directory>
+            </properties>
+        </profile>
+        <profile>
             <id>windows</id>
             <properties>
                 <working.directory>C:/Users/stephanie/Documents/Projets/backup</working.directory>

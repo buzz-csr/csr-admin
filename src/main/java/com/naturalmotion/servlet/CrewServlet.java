@@ -2,6 +2,10 @@ package com.naturalmotion.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.json.Json;
@@ -15,12 +19,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalmotion.api.CsrMember;
+import com.naturalmotion.history.AccountHistoryReader;
 import com.naturalmotion.webservice.api.Crew;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.api.Member;
+import com.naturalmotion.webservice.api.history.AccountHistory;
+import com.naturalmotion.webservice.api.history.DayHistory;
 import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
+import com.naturalmotion.webservice.service.history.HistoryUpdater;
 
 public class CrewServlet extends HttpServlet {
 
@@ -33,6 +42,12 @@ public class CrewServlet extends HttpServlet {
 	private AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 
 	private Configuration configuration = new Configuration();
+
+	private AccountHistoryReader accountHistoryReader = new AccountHistoryReader();
+
+	private HistoryUpdater historyUpdater = new HistoryUpdater();
+
+	private SimpleDateFormat dFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -60,16 +75,32 @@ public class CrewServlet extends HttpServlet {
 	}
 
 	private void getMembersList(HttpServletResponse resp, String crew) {
+		Date date = new Date();
 		Authorization authorization = authorizationFactory.get(crew);
 		List<Member> members = crewService.getMembers(authorization);
+		List<CsrMember> csrMember = new ArrayList<>();
+		members.forEach(x -> {
+			CsrMember from = CsrMember.from(x);
+			AccountHistory accountHistories = accountHistoryReader.get(from.getId());
+			historyUpdater.update(x, date, accountHistories);
+
+			DayHistory dayHistory = accountHistories.getDayHistories().get(dFormat.format(date));
+
+			if (dayHistory != null) {
+				from.setDayPerformance(dayHistory.getCumul());
+			} else {
+				from.setDayPerformance(BigDecimal.ZERO);
+			}
+			csrMember.add(from);
+		});
 
 		JsonObjectBuilder build = Json.createObjectBuilder();
-		members.forEach(x -> build.add(x.getId(), x.getName()));
+		csrMember.forEach(x -> build.add(x.getId(), x.getName()));
 
 		resp.setContentType("application/json; charset=UTF-8");
 		try (PrintWriter writer = resp.getWriter();) {
 			ObjectMapper mapper = new ObjectMapper();
-			writer.write("{ \"list\" : " + mapper.writeValueAsString(members) + ", \"names\" : "
+			writer.write("{ \"list\" : " + mapper.writeValueAsString(csrMember) + ", \"names\" : "
 					+ build.build().toString() + "}");
 		} catch (Exception e) {
 			log.error("Error loading crew informations", e);

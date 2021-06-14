@@ -60,7 +60,8 @@
               <div class="col-md-3 top10" ><p ng-bind-html="html(m.name)"></p></div>
               <div class="col-md-1 top10 rank">{{m.level | number}}</div>
               <div class="col-md-2 top10 token"><img src="images/token.png" width="15"></img>{{m.token | number}}</div>
-              <div class="col-md-3 top10 rp"><img src="images/RP.png" width="15"></img>{{m.points | number}}</div>
+              <div class="col-md-2 top10 rp"><img src="images/RP.png" width="15"></img>{{m.points | number}}</div>
+              <div class="col-md-1 top10 rp">+{{m.dayPerformance | number}}</div>
             </div>
       </div>
       <div class="tab-pane fade" ng-class="isTabPaneActive('crews')" id="profile" role="tabpanel" aria-labelledby="profile-tab">
