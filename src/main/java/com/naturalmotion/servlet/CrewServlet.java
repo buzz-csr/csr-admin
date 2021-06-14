@@ -82,6 +82,9 @@ public class CrewServlet extends HttpServlet {
 		members.forEach(x -> {
 			CsrMember from = CsrMember.from(x);
 			AccountHistory accountHistories = accountHistoryReader.get(from.getId());
+			if (accountHistories == null) {
+				accountHistories = new AccountHistory();
+			}
 			historyUpdater.update(x, date, accountHistories);
 
 			DayHistory dayHistory = accountHistories.getDayHistories().get(dFormat.format(date));
