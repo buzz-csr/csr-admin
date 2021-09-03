@@ -34,13 +34,16 @@
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <a class="nav-link" ng-class="isTabActive('players')" ng-click="changeTab('players')" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Joueurs</a>
+        <a class="nav-link" ng-class="isTabActive('players')" ng-click="changeTab('players');loadPlayers();" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Joueurs</a>
       </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link" ng-class="isTabActive('crews')" ng-click="changeTab('crews')" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Equipes</a>
+        <a class="nav-link" ng-class="isTabActive('crews')" ng-click="changeTab('crews');loadCrews();" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Equipes</a>
       </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link" ng-class="isTabActive('wildcards')" ng-click="changeTab('wildcards')" id="wildcards-tab" data-toggle="tab" href="#wildcards" role="tab" aria-controls="wildcards" aria-selected="false">Jokers</a>
+        <a class="nav-link" ng-class="isTabActive('graph')" ng-click="changeTab('graph');loadCrewsGraph();" id="graph-tab" data-toggle="tab" href="#graph" role="tab" aria-controls="graph" aria-selected="false">Statistiques</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" ng-class="isTabActive('wildcards')" ng-click="changeTab('wildcards');loadWildcards();" id="wildcards-tab" data-toggle="tab" href="#wildcards" role="tab" aria-controls="wildcards" aria-selected="false">Jokers</a>
       </li>
       <li class="nav-item" role="presentation">
         <a class="nav-link" ng-class="isTabActive('events')" ng-click="changeTab('events');loadScoreEvents();" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false">Evénements</a>
@@ -68,6 +71,9 @@
               <div class="col-md-5 top10 rp"><img src="images/RP.png" width="15"></img>{{m.points | number}}</div>
             </div>
       </div>
+      <div class="tab-pane fade" ng-class="isTabPaneActive('graph')" id="graph" role="tabpanel" aria-labelledby="graph-tab">
+          <div id="chartContainer" style="height: 500px; width: 100%;"></div>
+      </div>            
       <div class="tab-pane fade" ng-class="isTabPaneActive('wildcards')" id="wildcards" role="tabpanel" aria-labelledby="wildcards-tab">
             <div class="row">
                 <div ng-repeat="joker in wildcards" class="content col-md-4">
@@ -174,5 +180,6 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <script type="text/javascript" src="js/angular-sanitize.min.js"></script>
     <script type="text/javascript" src="js/members-app.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
 </html>

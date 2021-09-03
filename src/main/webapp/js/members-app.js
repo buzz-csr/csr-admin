@@ -1,7 +1,7 @@
 var memberModule = angular.module('memberModule', ['ngSanitize']);
 
 
-memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '$anchorScroll', function($scope, $http, $sce, $location, $anchorScroll) {
+memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '$anchorScroll', '$interval', function($scope, $http, $sce, $location, $anchorScroll, $interval) {
     $scope.loading = true;
     $scope.currentTab = "players";
     $scope.activeCrew = "rouge";
@@ -48,7 +48,7 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
             headers: { 'Content-Type': 'application/json' },
             params: {
                 page: 'crews',
-              crew: $scope.activeCrew,
+                crew: $scope.activeCrew,
           },
         }).then(function successCallback(response) {
             $scope.crews = response.data;
@@ -58,6 +58,67 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
         })
     }
 
+    $scope.loadCrewsGraph = function() {
+        $scope.loading = true;
+        $http({
+            method: 'get',
+            url: '/csr-admin/crew',
+            headers: { 'Content-Type': 'application/json' },
+            params: {
+                page: 'graph',
+                crew: $scope.activeCrew,
+          },
+        }).then(function successCallback(response) {
+            $scope.dataRange = [];
+            $scope.dataRank = [];
+            angular.forEach(response.data.histories, function(histo) {
+                $scope.dataRange.push({
+                   x: new Date(histo.snapshotDate),
+                   y: histo.diff
+                });
+                $scope.dataRank.push({
+                   x: new Date(histo.snapshotDate),
+                   y: histo.rank
+                });
+            });
+            
+            var chart = new CanvasJS.Chart("chartContainer", {
+                exportEnabled: true,
+                axisY: {
+                    title: "RP Crew / 5min",
+                    titleFontColor: "#4F81BC",
+                    lineColor: "#4F81BC",
+                    labelFontColor: "#4F81BC",
+                    tickColor: "#4F81BC"
+                },
+                axisY2: {
+                    title: "Place",
+                    interval: 1,
+                    titleFontColor: "#C0504E",
+                    lineColor: "#C0504E",
+                    labelFontColor: "#C0504E",
+                    tickColor: "#C0504E"
+                },                
+                data: [{
+                    type: "area",
+                    dataPoints: $scope.dataRange
+                },{
+                    type: "spline",
+                    axisYType: "secondary",
+                    dataPoints: $scope.dataRank
+                }],
+                zoomEnabled: true,
+                animationEnabled: true,
+                title: {
+                    text: "Statistiques du Crew"
+                },
+            });
+            chart.render();    
+            $scope.loading = false;
+            $interval($scope.loadCrewsGraph, 30000);
+        })
+    }
+    
     $scope.loadWildcards = function() {
         $http({
             method: 'get',
@@ -115,16 +176,6 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
     
     $scope.changeTab = function(tab) {
         $scope.currentTab = tab;
-
-        if (tab == 'crews') {
-            $scope.loadCrews();
-        } else if(tab == 'wildcards'){
-            $scope.loadWildcards();
-        } else if(tab == 'tchat'){
-            $scope.loadConversations();
-        } else {
-            $scope.loadPlayers();
-        }
     }
 
     $scope.isTabActive = function(tab) {
@@ -152,6 +203,7 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
         $scope.loadConversations();
         $scope.loadWildcards();
         $scope.loadScoreEvents();
+        $scope.loadCrewsGraph();
     }
 
     $scope.isActiveCrew = function(crew) {
@@ -188,4 +240,5 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
             return "card-text";
         }
     }
+    
 }]);

@@ -19,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.naturalmotion.api.CrewHistories;
 import com.naturalmotion.api.CsrMember;
 import com.naturalmotion.history.AccountHistoryReader;
+import com.naturalmotion.history.CrewHistoryReader;
 import com.naturalmotion.webservice.api.Crew;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.api.Member;
@@ -45,6 +47,8 @@ public class CrewServlet extends HttpServlet {
 
 	private AccountHistoryReader accountHistoryReader = new AccountHistoryReader();
 
+	private CrewHistoryReader crewHistoryReader = new CrewHistoryReader();
+
 	private HistoryUpdater historyUpdater = new HistoryUpdater();
 
 	private SimpleDateFormat dFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -56,8 +60,20 @@ public class CrewServlet extends HttpServlet {
 		String crew = req.getParameter("crew");
 		if ("crews".equals(page)) {
 			getCrewLeaderboard(resp, crew);
+		} else if ("graph".equals(page)) {
+			getCrewGraph(resp, crew);
 		} else {
 			getMembersList(resp, crew);
+		}
+	}
+
+	private void getCrewGraph(HttpServletResponse resp, String crew) {
+		CrewHistories crewHistories = crewHistoryReader.get(crew);
+		try (PrintWriter writer = resp.getWriter();) {
+			ObjectMapper mapper = new ObjectMapper();
+			writer.write(mapper.writeValueAsString(crewHistories));
+		} catch (Exception e) {
+			log.error("Error loading crew informations", e);
 		}
 	}
 

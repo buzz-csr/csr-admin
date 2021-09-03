@@ -41,24 +41,24 @@ public class AccountHistoryTask implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			Configuration configuration = new Configuration();
-			File backup = new File(configuration.getString("working.directory") + "/HISTORY/");
-			if (!backup.exists()) {
-				backup.mkdirs();
-			}
+		Configuration configuration = new Configuration();
+		File backup = new File(configuration.getString("working.directory") + "/HISTORY/");
+		if (!backup.exists()) {
+			backup.mkdirs();
+		}
 
-			AuthorizationFactory authorizationFactory = new AuthorizationFactory();
-			Authorization authorization = authorizationFactory.get(team);
-			while (true) {
+		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
+		Authorization authorization = authorizationFactory.get(team);
+		while (true) {
+			try {
 				Date date = new Date();
 				List<Member> members = crewResources.getMembers(authorization);
 				members.forEach(x -> updateHistory(x, backup, date));
 
 				Thread.sleep(TIMEOUT);
+			} catch (Exception e) {
+				log.error("Error into AccountHistoryTask", e);
 			}
-		} catch (InterruptedException e) {
-			log.error("Error into AccountHistoryTask", e);
 		}
 	}
 

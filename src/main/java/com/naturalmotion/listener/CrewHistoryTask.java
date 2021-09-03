@@ -22,7 +22,7 @@ import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 
 public class CrewHistoryTask implements Runnable {
 
-	private static final int TIMEOUT = 10 * 60 * 1000; // 10 min
+	private static final int TIMEOUT = 5 * 60 * 1000; // 5 min
 
 	private final Logger log = Logger.getLogger(CrewHistoryTask.class);
 
@@ -38,24 +38,24 @@ public class CrewHistoryTask implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			Configuration configuration = new Configuration();
-			File backup = new File(configuration.getString("working.directory") + "/HISTORY/");
-			if (!backup.exists()) {
-				backup.mkdirs();
-			}
+		Configuration configuration = new Configuration();
+		File backup = new File(configuration.getString("working.directory") + "/HISTORY/");
+		if (!backup.exists()) {
+			backup.mkdirs();
+		}
 
-			AuthorizationFactory authorizationFactory = new AuthorizationFactory();
-			Authorization authorization = authorizationFactory.get(team);
-			while (true) {
+		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
+		Authorization authorization = authorizationFactory.get(team);
+		while (true) {
+			try {
 				Date date = new Date();
 				Crew crew = crewResources.getCrew(authorization);
 
 				updateCrewHistory(backup, date, crew);
 				Thread.sleep(TIMEOUT);
+			} catch (Exception e) {
+				log.error("Error into AccountHistoryTask", e);
 			}
-		} catch (InterruptedException e) {
-			log.error("Error into AccountHistoryTask", e);
 		}
 	}
 
@@ -81,13 +81,13 @@ public class CrewHistoryTask implements Runnable {
 			if (lastHistories.size() > 0) {
 				CrewHistory lastSnapshot = lastHistories.stream()
 						.max((x, y) -> x.getSnapshotDate().compareTo(y.getSnapshotDate())).get();
-				if (lastSnapshot != null && lastSnapshot.getTotal() < crewHistory.getTotal()) {
+				if (lastSnapshot != null && lastSnapshot.getTotal() <= crewHistory.getTotal()) {
 					crewHistory.setDiff(crewHistory.getTotal() - lastSnapshot.getTotal());
 				} else {
 					crewHistory.setDiff(crewHistory.getTotal());
 				}
 			} else {
-				crewHistory.setDiff(crewHistory.getTotal());
+				crewHistory.setDiff(0);
 			}
 			lastHistories.add(crewHistory);
 
