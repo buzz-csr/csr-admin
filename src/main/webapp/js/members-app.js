@@ -83,6 +83,7 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
             });
             
             var chart = new CanvasJS.Chart("chartContainer", {
+                backgroundColor: "#e2bb30",
                 exportEnabled: true,
                 axisY: {
                     title: "RP Crew / 5min",
@@ -115,7 +116,6 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
             });
             chart.render();    
             $scope.loading = false;
-            $interval($scope.loadCrewsGraph, 30000);
         })
     }
     
