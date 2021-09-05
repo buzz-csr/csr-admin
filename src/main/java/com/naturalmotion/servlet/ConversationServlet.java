@@ -33,8 +33,8 @@ public class ConversationServlet extends HttpServlet {
 		String crew = req.getParameter("crew");
 		String crewId = configuration.getString(crew + ".crew-id");
 
-		List<List<Message>> conversations = new CrewResources().getConversations(authorizationFactory.get(crew),
-				crewId);
+		List<List<Message>> conversations = new CrewResources()
+				.getConversations(authorizationFactory.get(configuration.getString(crew + ".player-id")), crewId);
 		resp.setContentType("application/json; charset=UTF-8");
 		try (PrintWriter writer = resp.getWriter();) {
 			ObjectMapper mapper = new ObjectMapper();

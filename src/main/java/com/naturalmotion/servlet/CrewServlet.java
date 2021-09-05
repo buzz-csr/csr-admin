@@ -78,7 +78,7 @@ public class CrewServlet extends HttpServlet {
 	}
 
 	private void getCrewLeaderboard(HttpServletResponse resp, String crew) {
-		Authorization authorization = authorizationFactory.get(crew);
+		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
 		List<Crew> crews = crewService.getLeaderCrews(authorization, crew);
 		crews.stream().forEach(x -> x.setActive(x.getId().equals(configuration.getString(crew + ".crew-id"))));
 		resp.setContentType("application/json; charset=UTF-8");
@@ -92,7 +92,7 @@ public class CrewServlet extends HttpServlet {
 
 	private void getMembersList(HttpServletResponse resp, String crew) {
 		Date date = new Date();
-		Authorization authorization = authorizationFactory.get(crew);
+		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
 		List<Member> members = crewService.getMembers(authorization);
 		List<CsrMember> csrMember = new ArrayList<>();
 		members.forEach(x -> {
