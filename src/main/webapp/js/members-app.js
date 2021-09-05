@@ -83,8 +83,10 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
             });
             
             var chart = new CanvasJS.Chart("chartContainer", {
-                backgroundColor: "#e2bb30",
                 exportEnabled: true,
+                toolTip: {
+                    shared: true
+                },
                 axisY: {
                     title: "RP Crew / 5min",
                     titleFontColor: "#4F81BC",
@@ -94,7 +96,6 @@ memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '
                 },
                 axisY2: {
                     title: "Place",
-                    interval: 1,
                     titleFontColor: "#C0504E",
                     lineColor: "#C0504E",
                     labelFontColor: "#C0504E",
