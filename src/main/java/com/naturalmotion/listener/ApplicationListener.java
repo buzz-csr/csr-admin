@@ -14,13 +14,13 @@ public class ApplicationListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		threadChrisMembers = new Thread(new AccountHistoryTask("rouge"));
+		threadChrisMembers = new Thread(new AccountHistoryTask("chris"));
 		threadChrisMembers.start();
 		threadRedMembers = new Thread(new AccountHistoryTask("rouge"));
 		threadRedMembers.start();
 		threadOrangeMembers = new Thread(new AccountHistoryTask("orange"));
 		threadOrangeMembers.start();
-		threadChrisCrew = new Thread(new CrewHistoryTask("rouge"));
+		threadChrisCrew = new Thread(new CrewHistoryTask("chris"));
 		threadChrisCrew.start();
 		threadRedCrew = new Thread(new CrewHistoryTask("rouge"));
 		threadRedCrew.start();

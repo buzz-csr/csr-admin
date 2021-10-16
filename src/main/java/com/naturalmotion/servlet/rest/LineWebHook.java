@@ -12,7 +12,6 @@ public class LineWebHook {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/hook")
 	public String sayPlainTextHello(String content) {
-		System.out.println(content);
-		return "{ \"test\": \"coucou\" }";
+		return "{ \"receivedHook\": \"" + content + "\" }";
 	}
 }
