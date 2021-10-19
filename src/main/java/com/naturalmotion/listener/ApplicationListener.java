@@ -7,10 +7,10 @@ public class ApplicationListener implements ServletContextListener {
 
 	private Thread threadChrisMembers;
 	private Thread threadRedMembers;
-	private Thread threadOrangeMembers;
+//	private Thread threadOrangeMembers;
 	private Thread threadChrisCrew;
 	private Thread threadRedCrew;
-	private Thread threadOrangeCrew;
+//	private Thread threadOrangeCrew;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -18,14 +18,14 @@ public class ApplicationListener implements ServletContextListener {
 		threadChrisMembers.start();
 		threadRedMembers = new Thread(new AccountHistoryTask("rouge"));
 		threadRedMembers.start();
-		threadOrangeMembers = new Thread(new AccountHistoryTask("orange"));
-		threadOrangeMembers.start();
+//		threadOrangeMembers = new Thread(new AccountHistoryTask("orange"));
+//		threadOrangeMembers.start();
 		threadChrisCrew = new Thread(new CrewHistoryTask("chris"));
 		threadChrisCrew.start();
 		threadRedCrew = new Thread(new CrewHistoryTask("rouge"));
 		threadRedCrew.start();
-		threadOrangeCrew = new Thread(new CrewHistoryTask("orange"));
-		threadOrangeCrew.start();
+//		threadOrangeCrew = new Thread(new CrewHistoryTask("orange"));
+//		threadOrangeCrew.start();
 	}
 
 	@Override
@@ -33,9 +33,9 @@ public class ApplicationListener implements ServletContextListener {
 		threadChrisMembers.interrupt();
 		threadChrisCrew.interrupt();
 		threadRedMembers.interrupt();
-		threadOrangeMembers.interrupt();
 		threadRedCrew.interrupt();
-		threadOrangeCrew.interrupt();
+//		threadOrangeMembers.interrupt();
+//		threadOrangeCrew.interrupt();
 	}
 
 }
