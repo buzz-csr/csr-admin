@@ -52,10 +52,19 @@ public class CrewHistoryTask implements Runnable {
 				Crew crew = crewResources.getCrew(authorization);
 
 				updateCrewHistory(backup, date, crew);
-				Thread.sleep(TIMEOUT);
+				wating();
 			} catch (Exception e) {
-				log.error("Error into AccountHistoryTask", e);
+				log.error("Error into AccountHistoryTask for team " + team, e);
+				wating();
 			}
+		}
+	}
+
+	private void wating() {
+		try {
+			Thread.sleep(TIMEOUT);
+		} catch (InterruptedException e) {
+			log.error("Error waiting for team " + team, e);
 		}
 	}
 

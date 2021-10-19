@@ -55,10 +55,19 @@ public class AccountHistoryTask implements Runnable {
 				List<Member> members = crewResources.getMembers(authorization);
 				members.forEach(x -> updateHistory(x, backup, date));
 
-				Thread.sleep(TIMEOUT);
+				waiting();
 			} catch (Exception e) {
-				log.error("Error into AccountHistoryTask", e);
+				log.error("Error into AccountHistoryTask for team " + team, e);
+				waiting();
 			}
+		}
+	}
+
+	private void waiting() {
+		try {
+			Thread.sleep(TIMEOUT);
+		} catch (InterruptedException e) {
+			log.error("Error waiting for team " + team, e);
 		}
 	}
 
