@@ -17,6 +17,8 @@ import com.naturalmotion.webservice.service.json.Card;
 
 public class EventDetector {
 
+	private static final String COMPLETE = "complete";
+
 	private static final String LINE_USER = "U34b21f21232f2c9134cbb741eedfa6d2";
 
 	private Logger log = Logger.getLogger(EventDetector.class);
@@ -61,7 +63,8 @@ public class EventDetector {
 	private boolean isCompleted(TOKEN_RARITY rarity, com.naturalmotion.database.token.Card dbCard,
 	        List<Card> wildcards) {
 		Card actualCard = filterCard(rarity, wildcards);
-		return actualCard != null && !actualCard.getStatus().equals(dbCard.getStatus());
+		return actualCard != null && COMPLETE.equals(actualCard.getStatus())
+		        && !actualCard.getStatus().equals(dbCard.getStatus());
 	}
 
 	private Card filterCard(TOKEN_RARITY rarity, List<Card> wildcards) {

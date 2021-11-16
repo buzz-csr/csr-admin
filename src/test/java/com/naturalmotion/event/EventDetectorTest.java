@@ -29,6 +29,8 @@ import com.naturalmotion.webservice.service.json.Card;
 @RunWith(MockitoJUnitRunner.class)
 public class EventDetectorTest {
 
+	private static final String COMPLETE = "complete";
+
 	private static final String BRONZE_STATUS = "status3";
 
 	private static final String SILVER_STATUS = "status2";
@@ -72,10 +74,14 @@ public class EventDetectorTest {
 	}
 
 	private List<Card> realWilcards() {
+		return realWilcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS);
+	}
+
+	private List<Card> realWilcards(String goldStatus, String silverStatus, String bronzeStatus) {
 		List<Card> arrayList = new ArrayList<>();
-		arrayList.add(card(GOLD_STATUS, TOKEN_RARITY.GOLD));
-		arrayList.add(card(SILVER_STATUS, TOKEN_RARITY.SILVER));
-		arrayList.add(card(BRONZE_STATUS, TOKEN_RARITY.BRONZE));
+		arrayList.add(card(goldStatus, TOKEN_RARITY.GOLD));
+		arrayList.add(card(silverStatus, TOKEN_RARITY.SILVER));
+		arrayList.add(card(bronzeStatus, TOKEN_RARITY.BRONZE));
 		return arrayList;
 	}
 
@@ -104,7 +110,8 @@ public class EventDetectorTest {
 
 	@Test
 	public void testDetectGoldChanges() throws Exception {
-		doReturn(dbWildcards("status11", SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
+		doReturn(realWilcards(COMPLETE, SILVER_STATUS, BRONZE_STATUS)).when(crewResources).getWildcards(any());
+		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
 		verify(messageService).pushMessage(eq("Joker 150 plein !"), anyString());
 		verifyZeroInteractions(messageService);
@@ -112,7 +119,8 @@ public class EventDetectorTest {
 
 	@Test
 	public void testDetectSilverChanges() throws Exception {
-		doReturn(dbWildcards(GOLD_STATUS, "status21", BRONZE_STATUS)).when(dao).read(anyString());
+		doReturn(realWilcards(GOLD_STATUS, COMPLETE, BRONZE_STATUS)).when(crewResources).getWildcards(any());
+		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
 		verify(messageService).pushMessage(eq("Joker 70 plein !"), anyString());
 		verifyZeroInteractions(messageService);
@@ -120,7 +128,9 @@ public class EventDetectorTest {
 
 	@Test
 	public void testDetectBronzeChanges() throws Exception {
-		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, "status31")).when(dao).read(anyString());
+		doReturn(realWilcards(GOLD_STATUS, SILVER_STATUS, COMPLETE)).when(crewResources).getWildcards(any());
+
+		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
 		verify(messageService).pushMessage(eq("Joker 30 plein !"), anyString());
 		verifyZeroInteractions(messageService);
@@ -128,7 +138,8 @@ public class EventDetectorTest {
 
 	@Test
 	public void testDetectAllChanges() throws Exception {
-		doReturn(dbWildcards("status11", "status21", "status31")).when(dao).read(anyString());
+		doReturn(realWilcards(COMPLETE, COMPLETE, COMPLETE)).when(crewResources).getWildcards(any());
+		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
 		verify(messageService).pushMessage(eq("Joker 150 plein !"), anyString());
 		verify(messageService).pushMessage(eq("Joker 70 plein !"), anyString());
