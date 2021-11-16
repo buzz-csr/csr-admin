@@ -76,6 +76,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+		</dependency>
+		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.json</artifactId>
 			<version>1.1.4</version>
@@ -108,12 +113,29 @@
 			<version>3.5.2</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.8</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hamcrest-core</artifactId>
+                    <groupId>org.hamcrest</groupId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.naturalmotion</groupId>
 			<artifactId>csr-webservice-api</artifactId>
 			<version>1.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.line</groupId>
+			<artifactId>line-bot</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -121,12 +143,14 @@
 			<id>linux</id>
 			<properties>
 				<working.directory>/home/jerome/Documents/backup</working.directory>
+				<h2.file>jdbc:h2:file:/home/jerome/Documents/backup/database;DB_CLOSE_DELAY=-1</h2.file>
 			</properties>
 		</profile>
 		<profile>
 			<id>linux-local</id>
 			<properties>
 				<working.directory>/home/jerome/Documents/backupTest</working.directory>
+				<h2.file>jdbc:h2:file:/home/jerome/Documents/backupTest/database;DB_CLOSE_DELAY=-1</h2.file>
 			</properties>
 		</profile>
 		<profile>
