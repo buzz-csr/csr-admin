@@ -90,8 +90,8 @@ public class EventDetectorTest {
 	}
 
 	@Test
-	public void testDetectNoDatainDB() throws Exception {
-		doReturn(null).when(dao).read(anyString());
+	public void testDetectNoNmData() throws Exception {
+		doReturn(null).when(crewResources).getWildcards(any());
 		eventDetector.detect();
 		verifyZeroInteractions(messageService);
 		verify(dao, never()).update(any());

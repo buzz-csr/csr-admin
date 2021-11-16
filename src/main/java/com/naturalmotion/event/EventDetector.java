@@ -9,6 +9,7 @@ import com.line.api.MessageService;
 import com.line.api.MessageServiceImpl;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.TokenDao;
+import com.naturalmotion.database.token.Converter;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.service.auth.Authorization;
@@ -31,6 +32,8 @@ public class EventDetector {
 
 	private MessageService messageService = new MessageServiceImpl();
 
+	private Converter converter = new Converter();
+
 	public EventDetector(String crew) {
 		this.crew = crew;
 	}
@@ -43,19 +46,17 @@ public class EventDetector {
 
 			if (read != null && isCompleted(TOKEN_RARITY.GOLD, read.getGold(), wildcards)) {
 				messageService.pushMessage("Joker 150 plein !", LINE_USER);
-				read.setGold(createUpdatedCard(filterCard(TOKEN_RARITY.GOLD, wildcards)));
 			}
 			if (read != null && isCompleted(TOKEN_RARITY.SILVER, read.getSilver(), wildcards)) {
 				messageService.pushMessage("Joker 70 plein !", LINE_USER);
-				read.setSilver(createUpdatedCard(filterCard(TOKEN_RARITY.SILVER, wildcards)));
 			}
 			if (read != null && isCompleted(TOKEN_RARITY.BRONZE, read.getBronze(), wildcards)) {
 				messageService.pushMessage("Joker 30 plein !", LINE_USER);
-				read.setBronze(createUpdatedCard(filterCard(TOKEN_RARITY.BRONZE, wildcards)));
 			}
 
-			if (read != null) {
-				dao.update(read);
+			Token converted = converter.convert(wildcards);
+			if (converted != null) {
+				dao.update(converted);
 			}
 		} catch (SQLException e) {
 			log.error("Error read wilcards from database", e);
@@ -63,19 +64,8 @@ public class EventDetector {
 
 	}
 
-	private com.naturalmotion.database.token.Card createUpdatedCard(Card filterCard) {
-		com.naturalmotion.database.token.Card card = null;
-		if (filterCard != null) {
-			card = new com.naturalmotion.database.token.Card();
-			card.setCost(filterCard.getCost());
-			card.setPaid(filterCard.getPaid());
-			card.setStatus(filterCard.getStatus());
-		}
-		return card;
-	}
-
 	private boolean isCompleted(TOKEN_RARITY rarity, com.naturalmotion.database.token.Card dbCard,
-			List<Card> wildcards) {
+	        List<Card> wildcards) {
 		Card actualCard = filterCard(rarity, wildcards);
 		return actualCard != null && !actualCard.getStatus().equals(dbCard.getStatus());
 	}
