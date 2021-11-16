@@ -9,7 +9,6 @@ import com.line.api.MessageService;
 import com.line.api.MessageServiceImpl;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.TokenDao;
-import com.naturalmotion.database.token.Converter;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.service.auth.Authorization;
@@ -32,8 +31,6 @@ public class EventDetector {
 
 	private MessageService messageService = new MessageServiceImpl();
 
-	private Converter converter = new Converter();
-
 	public EventDetector(String crew) {
 		this.crew = crew;
 	}
@@ -44,19 +41,16 @@ public class EventDetector {
 		try {
 			Token read = dao.read(crew);
 
-			if (read != null && isCompleted(TOKEN_RARITY.GOLD, read.getGold(), wildcards)) {
+			if (read != null && read.getGold() != null && isCompleted(TOKEN_RARITY.GOLD, read.getGold(), wildcards)) {
 				messageService.pushMessage("Joker 150 plein !", LINE_USER);
 			}
-			if (read != null && isCompleted(TOKEN_RARITY.SILVER, read.getSilver(), wildcards)) {
+			if (read != null && read.getSilver() != null
+			        && isCompleted(TOKEN_RARITY.SILVER, read.getSilver(), wildcards)) {
 				messageService.pushMessage("Joker 70 plein !", LINE_USER);
 			}
-			if (read != null && isCompleted(TOKEN_RARITY.BRONZE, read.getBronze(), wildcards)) {
+			if (read != null && read.getBronze() != null
+			        && isCompleted(TOKEN_RARITY.BRONZE, read.getBronze(), wildcards)) {
 				messageService.pushMessage("Joker 30 plein !", LINE_USER);
-			}
-
-			Token converted = converter.convert(wildcards);
-			if (converted != null) {
-				dao.update(converted);
 			}
 		} catch (SQLException e) {
 			log.error("Error read wilcards from database", e);

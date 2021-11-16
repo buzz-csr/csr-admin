@@ -15,7 +15,7 @@ public class ConverterTest {
 
 	@Test
 	public void testConvertNull() {
-		Token actual = converter.convert(null);
+		Token actual = converter.convert(null, "crew");
 		Assertions.assertThat(actual).isNull();
 	}
 
@@ -25,7 +25,7 @@ public class ConverterTest {
 		wildcards.add(card(TOKEN_RARITY.BRONZE, 1, 10, "status1"));
 		wildcards.add(card(TOKEN_RARITY.GOLD, 2, 11, "status2"));
 		wildcards.add(card(TOKEN_RARITY.SILVER, 3, 12, "status3"));
-		Token actual = converter.convert(wildcards);
+		Token actual = converter.convert(wildcards, "crew");
 		Assertions.assertThat(actual.getBronze().getCost()).isEqualTo(1);
 		Assertions.assertThat(actual.getBronze().getPaid()).isEqualTo(10);
 		Assertions.assertThat(actual.getBronze().getStatus()).isEqualTo("status1");

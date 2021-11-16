@@ -4,7 +4,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -94,7 +93,6 @@ public class EventDetectorTest {
 		doReturn(null).when(crewResources).getWildcards(any());
 		eventDetector.detect();
 		verifyZeroInteractions(messageService);
-		verify(dao, never()).update(any());
 	}
 
 	@Test
@@ -110,7 +108,6 @@ public class EventDetectorTest {
 		eventDetector.detect();
 		verify(messageService).pushMessage(eq("Joker 150 plein !"), anyString());
 		verifyZeroInteractions(messageService);
-		verify(dao).update(any());
 	}
 
 	@Test
@@ -119,7 +116,6 @@ public class EventDetectorTest {
 		eventDetector.detect();
 		verify(messageService).pushMessage(eq("Joker 70 plein !"), anyString());
 		verifyZeroInteractions(messageService);
-		verify(dao).update(any());
 	}
 
 	@Test
@@ -128,7 +124,6 @@ public class EventDetectorTest {
 		eventDetector.detect();
 		verify(messageService).pushMessage(eq("Joker 30 plein !"), anyString());
 		verifyZeroInteractions(messageService);
-		verify(dao).update(any());
 	}
 
 	@Test
@@ -139,6 +134,5 @@ public class EventDetectorTest {
 		verify(messageService).pushMessage(eq("Joker 70 plein !"), anyString());
 		verify(messageService).pushMessage(eq("Joker 30 plein !"), anyString());
 		verifyZeroInteractions(messageService);
-		verify(dao).update(any());
 	}
 }

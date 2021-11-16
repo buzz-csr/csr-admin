@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.naturalmotion.event.EventDetector;
+import com.naturalmotion.event.EventUpdater;
 import com.naturalmotion.webservice.configuration.Configuration;
 
 public class EventTask implements Runnable {
@@ -14,29 +15,36 @@ public class EventTask implements Runnable {
 
 	private Configuration configuration = new Configuration();
 
-	private List<EventDetector> eventDetector;
+	private List<EventDetector> eventDetector = new ArrayList<>();
+
+	private List<EventUpdater> eventUpdater = new ArrayList<>();
 
 	private boolean running = true;
 
 	public EventTask() {
 		List<String> list = configuration.getList("token.task.crew");
-		eventDetector = new ArrayList<>();
-		list.stream().forEach(x -> eventDetector.add(new EventDetector(x)));
+		list.stream().forEach(x -> extracted(x));
+	}
+
+	private void extracted(String x) {
+		eventDetector.add(new EventDetector(x));
+		eventUpdater.add(new EventUpdater(x));
 	}
 
 	@Override
 	public void run() {
 		while (running) {
-			for (EventDetector event : eventDetector) {
-				event.detect();
-			}
+			eventDetector.stream().forEach(x -> x.detect());
+			eventUpdater.stream().forEach(x -> x.update());
+
 			waiting();
 		}
+		log.info("EventTask thread has been stopped");
 	}
 
 	private void waiting() {
 		try {
-			Thread.sleep(60000);
+			Thread.sleep(30000);
 		} catch (InterruptedException e) {
 			log.error("Error waiting", e);
 		}

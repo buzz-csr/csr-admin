@@ -143,12 +143,14 @@
 			<id>linux</id>
 			<properties>
 				<working.directory>/home/jerome/Documents/backup</working.directory>
+				<h2.file>jdbc:h2:file:/home/jerome/Documents/backup/database;DB_CLOSE_DELAY=-1</h2.file>
 			</properties>
 		</profile>
 		<profile>
 			<id>linux-local</id>
 			<properties>
 				<working.directory>/home/jerome/Documents/backupTest</working.directory>
+				<h2.file>jdbc:h2:file:/home/jerome/Documents/backupTest/database;DB_CLOSE_DELAY=-1</h2.file>
 			</properties>
 		</profile>
 		<profile>

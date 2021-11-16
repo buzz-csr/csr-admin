@@ -7,10 +7,11 @@ import com.naturalmotion.webservice.service.json.Card;
 
 public class Converter {
 
-	public Token convert(List<Card> wildcards) {
+	public Token convert(List<Card> wildcards, String crew) {
 		Token result = null;
 		if (wildcards != null && !wildcards.isEmpty()) {
 			result = new Token();
+			result.setCrew(crew);
 
 			convertGold(wildcards, result);
 			convertSilver(wildcards, result);
