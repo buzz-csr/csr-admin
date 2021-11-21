@@ -1,5 +1,6 @@
 package com.naturalmotion.event;
 
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.line.api.MessageService;
 import com.line.api.MessageServiceImpl;
+import com.linecorp.bot.model.message.TextMessage;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Token;
@@ -64,9 +66,32 @@ public class EventDetector {
 
 	private void detectWilcardChanges(com.naturalmotion.database.token.Card dbCard, List<Card> wildcards,
 	        TOKEN_RARITY rarity) {
-		Card actualGold = filterCard(rarity, wildcards);
-		if (dbCard != null && isChanged(rarity, dbCard, actualGold)) {
-			messageService.pushMessage(messageFactory.create(rarity, actualGold), LINE_USER);
+		Card actualCard = filterCard(rarity, wildcards);
+		if (dbCard != null && isChanged(rarity, dbCard, actualCard)) {
+			if (WILCARD_STATUS.COMPLETE.getNmValue().equals(actualCard.getStatus())) {
+				TextMessage textMessage = null;
+				switch (rarity) {
+				case GOLD:
+					textMessage = messageFactory.createGoldFull();
+					break;
+				case SILVER:
+					textMessage = messageFactory.createSilverFull();
+					break;
+				case BRONZE:
+					textMessage = messageFactory.createBronzeFull();
+					break;
+				default:
+					break;
+				}
+				messageService.pushMessage(textMessage, LINE_USER);
+			}
+			if (WILCARD_STATUS.ACTIVE.getNmValue().equals(actualCard.getStatus())) {
+				try {
+					messageService.pushImage(messageFactory.createImage(actualCard, crew), LINE_USER);
+				} catch (URISyntaxException e) {
+					log.error("Impossible d'envoyer l'image");
+				}
+			}
 		}
 	}
 

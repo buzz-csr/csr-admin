@@ -2,8 +2,8 @@ package com.naturalmotion.event;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -11,14 +11,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.line.api.MessageService;
+import com.linecorp.bot.model.message.TextMessage;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Token;
@@ -51,6 +55,9 @@ public class EventDetectorTest {
 
 	@InjectMocks
 	private EventDetector eventDetector = new EventDetector("rouge");
+
+	@Captor
+	private ArgumentCaptor<TextMessage> textMessage;
 
 	@Before
 	public void setup() throws SQLException {
@@ -113,7 +120,8 @@ public class EventDetectorTest {
 		doReturn(realWilcards(COMPLETE, SILVER_STATUS, BRONZE_STATUS)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService).pushMessage(eq("Joker 150 plein !"), anyString());
+		verify(messageService).pushMessage(textMessage.capture(), anyString());
+		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$$ $$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -122,7 +130,8 @@ public class EventDetectorTest {
 		doReturn(realWilcards(GOLD_STATUS, COMPLETE, BRONZE_STATUS)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService).pushMessage(eq("Joker 70 plein !"), anyString());
+		verify(messageService).pushMessage(textMessage.capture(), anyString());
+		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$$ $$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -132,7 +141,8 @@ public class EventDetectorTest {
 
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService).pushMessage(eq("Joker 30 plein !"), anyString());
+		verify(messageService).pushMessage(textMessage.capture(), anyString());
+		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$$ $$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -141,9 +151,8 @@ public class EventDetectorTest {
 		doReturn(realWilcards(COMPLETE, COMPLETE, COMPLETE)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService).pushMessage(eq("Joker 150 plein !"), anyString());
-		verify(messageService).pushMessage(eq("Joker 70 plein !"), anyString());
-		verify(messageService).pushMessage(eq("Joker 30 plein !"), anyString());
+		verify(messageService, times(3)).pushMessage(textMessage.capture(), anyString());
+		Assertions.assertThat(textMessage.getAllValues()).hasSize(3);
 		verifyZeroInteractions(messageService);
 	}
 }
