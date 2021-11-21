@@ -49,13 +49,16 @@ public class ApplicationListener implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent sce) {
 		if (accountHistoryTask != null) {
 			accountHistoryTask.stop();
+			Logger.getLogger(ApplicationListener.class).info("AccountHistoryTask stopped");
 		}
 		if (crewHistoryTask != null) {
 			crewHistoryTask.stop();
+			Logger.getLogger(ApplicationListener.class).info("CrewHistoryTask stopped");
 		}
 
 		if (eventTask != null) {
 			eventTask.stop();
+			Logger.getLogger(ApplicationListener.class).info("EventTask stopped");
 		}
 		threadRedMembers.interrupt();
 		threadRedCrew.interrupt();
@@ -63,6 +66,10 @@ public class ApplicationListener implements ServletContextListener {
 
 		if (server != null) {
 			server.stop();
+			while (server.isRunning(false)) {
+				Logger.getLogger(ApplicationListener.class).info("Stopping h2...");
+			}
+			Logger.getLogger(ApplicationListener.class).info("h2 stopped");
 		}
 	}
 
