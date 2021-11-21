@@ -32,7 +32,7 @@ public class ApplicationListener implements ServletContextListener {
 			threadRedCrew.start();
 
 		} catch (SQLException e) {
-			Logger.getLogger(ApplicationListener.class).error("Error initializing database");
+			Logger.getLogger(ApplicationListener.class).error("Error initializing database", e);
 		}
 
 	}
