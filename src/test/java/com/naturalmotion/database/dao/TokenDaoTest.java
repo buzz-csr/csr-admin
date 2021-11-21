@@ -8,14 +8,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.naturalmotion.database.dao.TokenDao;
+import com.naturalmotion.database.DatabaseInitializer;
 import com.naturalmotion.database.token.Card;
 import com.naturalmotion.database.token.Token;
 
 public class TokenDaoTest {
 
 	private TokenDao dao = new TokenDao();
- 
+
 	private static Server server;
 
 	@BeforeClass
