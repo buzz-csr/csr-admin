@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import com.line.api.MessageService;
 import com.line.api.MessageServiceImpl;
 import com.naturalmotion.database.TOKEN_RARITY;
-import com.naturalmotion.database.TokenDao;
+import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.configuration.Configuration;

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.naturalmotion.database.TokenDao;
+import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Converter;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.webservice.api.CrewResources;

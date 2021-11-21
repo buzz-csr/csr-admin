@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.naturalmotion.database.TokenDao;
+import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;

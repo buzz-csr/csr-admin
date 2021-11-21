@@ -20,7 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.line.api.MessageService;
 import com.naturalmotion.database.TOKEN_RARITY;
-import com.naturalmotion.database.TokenDao;
+import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
