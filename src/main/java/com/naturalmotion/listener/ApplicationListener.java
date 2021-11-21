@@ -18,11 +18,13 @@ public class ApplicationListener implements ServletContextListener {
 	private Thread eventThread;
 	private EventTask eventTask;
 	private Server server;
+	private AccountHistoryTask accountHistoryTask;
+	private CrewHistoryTask crewHistoryTask;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		try {
-			server = Server.createTcpServer(args).start();
+			server = Server.createTcpServer("-tcpAllowOthers").start();
 
 			new DatabaseInitializer().init();
 
@@ -30,9 +32,11 @@ public class ApplicationListener implements ServletContextListener {
 			eventThread = new Thread(eventTask);
 			eventThread.start();
 
-			threadRedMembers = new Thread(new AccountHistoryTask("rouge"));
+			accountHistoryTask = new AccountHistoryTask("rouge");
+			threadRedMembers = new Thread(accountHistoryTask);
 			threadRedMembers.start();
-			threadRedCrew = new Thread(new CrewHistoryTask("rouge"));
+			crewHistoryTask = new CrewHistoryTask("rouge");
+			threadRedCrew = new Thread(crewHistoryTask);
 			threadRedCrew.start();
 
 		} catch (SQLException e) {
@@ -43,13 +47,20 @@ public class ApplicationListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		threadRedMembers.interrupt();
-		threadRedCrew.interrupt();
+		if (accountHistoryTask != null) {
+			accountHistoryTask.stop();
+		}
+		if (crewHistoryTask != null) {
+			crewHistoryTask.stop();
+		}
 
 		if (eventTask != null) {
 			eventTask.stop();
-			eventThread.interrupt();
 		}
+		threadRedMembers.interrupt();
+		threadRedCrew.interrupt();
+		eventThread.interrupt();
+
 		if (server != null) {
 			server.stop();
 		}

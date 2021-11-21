@@ -35,6 +35,8 @@ public class AccountHistoryTask implements Runnable {
 
 	private String team;
 
+	private boolean running = true;
+
 	public AccountHistoryTask(String team) {
 		this.team = team;
 	}
@@ -49,7 +51,7 @@ public class AccountHistoryTask implements Runnable {
 
 		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 		Authorization authorization = authorizationFactory.get(team);
-		while (true) {
+		while (running) {
 			try {
 				Date date = new Date();
 				List<Member> members = crewResources.getMembers(authorization);
@@ -97,4 +99,7 @@ public class AccountHistoryTask implements Runnable {
 		}
 	}
 
+	public void stop() {
+		running = false;
+	}
 }

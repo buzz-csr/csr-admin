@@ -32,6 +32,8 @@ public class CrewHistoryTask implements Runnable {
 
 	private String team;
 
+	private boolean running = true;
+
 	public CrewHistoryTask(String team) {
 		this.team = team;
 	}
@@ -46,7 +48,7 @@ public class CrewHistoryTask implements Runnable {
 
 		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 		Authorization authorization = authorizationFactory.get(team);
-		while (true) {
+		while (running) {
 			try {
 				Date date = new Date();
 				Crew crew = crewResources.getCrew(authorization);
@@ -89,7 +91,7 @@ public class CrewHistoryTask implements Runnable {
 
 			if (lastHistories.size() > 0) {
 				CrewHistory lastSnapshot = lastHistories.stream()
-						.max((x, y) -> x.getSnapshotDate().compareTo(y.getSnapshotDate())).get();
+				        .max((x, y) -> x.getSnapshotDate().compareTo(y.getSnapshotDate())).get();
 				if (lastSnapshot != null && lastSnapshot.getTotal() <= crewHistory.getTotal()) {
 					crewHistory.setDiff(crewHistory.getTotal() - lastSnapshot.getTotal());
 				} else {
@@ -104,7 +106,7 @@ public class CrewHistoryTask implements Runnable {
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_YEAR, -10);
 			histories.setHistories(lastHistories.stream().filter(x -> x.getSnapshotDate().after(calendar.getTime()))
-					.collect(Collectors.toList()));
+			        .collect(Collectors.toList()));
 
 			write(histories, crewFile);
 		} catch (IOException e) {
@@ -118,4 +120,7 @@ public class CrewHistoryTask implements Runnable {
 		}
 	}
 
+	public void stop() {
+		running = false;
+	}
 }
