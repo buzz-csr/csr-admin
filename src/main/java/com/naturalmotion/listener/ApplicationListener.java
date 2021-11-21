@@ -6,6 +6,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
+import org.h2.tools.Server;
 
 import com.naturalmotion.database.DatabaseInitializer;
 
@@ -16,10 +17,13 @@ public class ApplicationListener implements ServletContextListener {
 
 	private Thread eventThread;
 	private EventTask eventTask;
+	private Server server;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		try {
+			server = Server.createTcpServer(args).start();
+
 			new DatabaseInitializer().init();
 
 			eventTask = new EventTask();
@@ -45,6 +49,9 @@ public class ApplicationListener implements ServletContextListener {
 		if (eventTask != null) {
 			eventTask.stop();
 			eventThread.interrupt();
+		}
+		if (server != null) {
+			server.stop();
 		}
 	}
 

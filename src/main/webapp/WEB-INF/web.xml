@@ -24,9 +24,6 @@
 	<listener>
 		<listener-class>com.naturalmotion.listener.ApplicationListener</listener-class>
 	</listener>
-	<listener>
-		<listener-class>org.h2.server.web.DbStarter</listener-class>
-	</listener>
 
 	<servlet>
 		<servlet-name>tchat</servlet-name>
