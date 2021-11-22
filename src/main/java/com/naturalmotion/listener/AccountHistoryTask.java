@@ -19,7 +19,7 @@ import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.history.HistoryCleaner;
 import com.naturalmotion.webservice.service.history.HistoryUpdater;
 
-public class AccountHistoryTask implements Runnable {
+public class AccountHistoryTask implements CsrTask {
 
 	private static final int TIMEOUT = 30 * 60 * 1000; // 30 min
 
@@ -35,7 +35,7 @@ public class AccountHistoryTask implements Runnable {
 
 	private String team;
 
-	private boolean running = true;
+	private STATE state = STATE.RUNNING;
 
 	public AccountHistoryTask(String team) {
 		this.team = team;
@@ -51,7 +51,7 @@ public class AccountHistoryTask implements Runnable {
 
 		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 		Authorization authorization = authorizationFactory.get(team);
-		while (running) {
+		while (STATE.RUNNING.equals(state)) {
 			try {
 				Date date = new Date();
 				List<Member> members = crewResources.getMembers(authorization);
@@ -63,6 +63,8 @@ public class AccountHistoryTask implements Runnable {
 				waiting();
 			}
 		}
+
+		state = STATE.STOP;
 	}
 
 	private void waiting() {
@@ -99,7 +101,13 @@ public class AccountHistoryTask implements Runnable {
 		}
 	}
 
+	@Override
 	public void stop() {
-		running = false;
+		state = STATE.STOPPING;
+	}
+
+	@Override
+	public boolean isRunning() {
+		return STATE.STOP.equals(state);
 	}
 }

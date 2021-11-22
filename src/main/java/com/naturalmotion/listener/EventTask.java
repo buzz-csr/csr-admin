@@ -9,7 +9,7 @@ import com.naturalmotion.event.EventDetector;
 import com.naturalmotion.event.EventUpdater;
 import com.naturalmotion.webservice.configuration.Configuration;
 
-public class EventTask implements Runnable {
+public class EventTask implements CsrTask {
 
 	private Logger log = Logger.getLogger(EventTask.class);
 
@@ -19,7 +19,7 @@ public class EventTask implements Runnable {
 
 	private List<EventUpdater> eventUpdater = new ArrayList<>();
 
-	private boolean running = true;
+	private STATE state = STATE.RUNNING;
 
 	public EventTask() {
 		List<String> list = configuration.getList("token.task.crew");
@@ -33,12 +33,13 @@ public class EventTask implements Runnable {
 
 	@Override
 	public void run() {
-		while (running) {
+		while (STATE.RUNNING.equals(state)) {
 			eventDetector.stream().forEach(x -> x.detect());
 			eventUpdater.stream().forEach(x -> x.update());
 
 			waiting();
 		}
+		state = STATE.STOP;
 		log.info("EventTask thread has been stopped");
 	}
 
@@ -50,7 +51,13 @@ public class EventTask implements Runnable {
 		}
 	}
 
+	@Override
 	public void stop() {
-		running = false;
+		state = STATE.STOPPING;
+	}
+
+	@Override
+	public boolean isRunning() {
+		return STATE.STOP.equals(state);
 	}
 }

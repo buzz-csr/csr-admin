@@ -12,6 +12,8 @@ import com.naturalmotion.database.DatabaseInitializer;
 
 public class ApplicationListener implements ServletContextListener {
 
+	private final Logger log = Logger.getLogger(ApplicationListener.class);
+
 	private Thread threadRedMembers;
 	private Thread threadRedCrew;
 
@@ -39,38 +41,58 @@ public class ApplicationListener implements ServletContextListener {
 			threadRedCrew = new Thread(crewHistoryTask);
 			threadRedCrew.start();
 
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+
+				@Override
+				public void run() {
+					stopAll();
+				}
+			});
 		} catch (SQLException e) {
-			Logger.getLogger(ApplicationListener.class).error("Error initializing database", e);
+			log.error("Error initializing database", e);
 		}
 
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		if (accountHistoryTask != null) {
-			accountHistoryTask.stop();
-			Logger.getLogger(ApplicationListener.class).info("AccountHistoryTask stopped");
-		}
-		if (crewHistoryTask != null) {
-			crewHistoryTask.stop();
-			Logger.getLogger(ApplicationListener.class).info("CrewHistoryTask stopped");
-		}
+		stopAll();
+	}
 
-		if (eventTask != null) {
-			eventTask.stop();
-			Logger.getLogger(ApplicationListener.class).info("EventTask stopped");
-		}
-		threadRedMembers.interrupt();
-		threadRedCrew.interrupt();
-		eventThread.interrupt();
+	private void stopAll() {
+		stopTask(accountHistoryTask);
+		stopTask(crewHistoryTask);
+		stopTask(eventTask);
+
+		stopThread(threadRedMembers);
+		stopThread(threadRedCrew);
+		stopThread(eventThread);
 
 		if (server != null) {
 			server.stop();
 			while (server.isRunning(false)) {
-				Logger.getLogger(ApplicationListener.class).info("Stopping h2...");
+				log.info("Stopping h2...");
 			}
-			Logger.getLogger(ApplicationListener.class).info("h2 stopped");
+			log.info("h2 stopped");
 		}
+	}
+
+	private void stopTask(CsrTask task) {
+		if (task != null) {
+			task.stop();
+			while (task.isRunning()) {
+				log.info("Stopping " + task.getClass().getCanonicalName() + "...");
+			}
+			log.info(task.getClass().getCanonicalName() + " stopped");
+		}
+	}
+
+	private void stopThread(Thread thread) {
+		thread.interrupt();
+		while (!thread.isInterrupted()) {
+			log.info("Stopping " + thread.getClass().getCanonicalName() + "...");
+		}
+		log.info(thread.getClass().getCanonicalName() + " stopped");
 	}
 
 }

@@ -20,7 +20,7 @@ import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 
-public class CrewHistoryTask implements Runnable {
+public class CrewHistoryTask implements CsrTask {
 
 	private static final int TIMEOUT = 5 * 60 * 1000; // 5asjs min
 
@@ -32,7 +32,7 @@ public class CrewHistoryTask implements Runnable {
 
 	private String team;
 
-	private boolean running = true;
+	private STATE state = STATE.RUNNING;
 
 	public CrewHistoryTask(String team) {
 		this.team = team;
@@ -48,7 +48,7 @@ public class CrewHistoryTask implements Runnable {
 
 		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 		Authorization authorization = authorizationFactory.get(team);
-		while (running) {
+		while (STATE.RUNNING.equals(state)) {
 			try {
 				Date date = new Date();
 				Crew crew = crewResources.getCrew(authorization);
@@ -60,6 +60,7 @@ public class CrewHistoryTask implements Runnable {
 				wating();
 			}
 		}
+		state = STATE.STOP;
 	}
 
 	private void wating() {
@@ -91,7 +92,7 @@ public class CrewHistoryTask implements Runnable {
 
 			if (lastHistories.size() > 0) {
 				CrewHistory lastSnapshot = lastHistories.stream()
-				        .max((x, y) -> x.getSnapshotDate().compareTo(y.getSnapshotDate())).get();
+						.max((x, y) -> x.getSnapshotDate().compareTo(y.getSnapshotDate())).get();
 				if (lastSnapshot != null && lastSnapshot.getTotal() <= crewHistory.getTotal()) {
 					crewHistory.setDiff(crewHistory.getTotal() - lastSnapshot.getTotal());
 				} else {
@@ -106,7 +107,7 @@ public class CrewHistoryTask implements Runnable {
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_YEAR, -10);
 			histories.setHistories(lastHistories.stream().filter(x -> x.getSnapshotDate().after(calendar.getTime()))
-			        .collect(Collectors.toList()));
+					.collect(Collectors.toList()));
 
 			write(histories, crewFile);
 		} catch (IOException e) {
@@ -120,7 +121,13 @@ public class CrewHistoryTask implements Runnable {
 		}
 	}
 
+	@Override
 	public void stop() {
-		running = false;
+		state = STATE.STOPPING;
+	}
+
+	@Override
+	public boolean isRunning() {
+		return STATE.STOP.equals(state);
 	}
 }

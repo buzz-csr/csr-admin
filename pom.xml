@@ -163,6 +163,7 @@
 			<id>bureau</id>
 			<properties>
 				<working.directory>C:/Dev/Git/perso/backup</working.directory>
+				<h2.file>jdbc:h2:file:C:/Dev/Git/perso/csr/database;DB_CLOSE_DELAY=-1</h2.file>
 			</properties>
 		</profile>
 	</profiles>
