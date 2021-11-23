@@ -21,4 +21,14 @@ public enum TOKEN_RARITY {
 		return name;
 	}
 
+	public static TOKEN_RARITY from(String nmValue) {
+		TOKEN_RARITY result = null;
+		for (TOKEN_RARITY actual : TOKEN_RARITY.values()) {
+			if (actual.getNmValue().equals(nmValue)) {
+				result = actual;
+			}
+		}
+		return result;
+	}
+
 }

@@ -108,8 +108,8 @@ public class MessageFactory {
 
 	public ImageMessage createImage(Card actualCard, String crew) throws URISyntaxException {
 		ImageMessageBuilder imBuilder = ImageMessage.builder();
-		URI uri = new URI("https://mod.csr-lesnains.fr/csr-admin/images/line/" + String.valueOf(actualCard.getCost())
-		        + "_" + crew + ".jpg");
+		URI uri = new URI("https://mod.csr-lesnains.fr/csr-admin/images/line/"
+		        + TOKEN_RARITY.from(actualCard.getRarity()).getName() + "_" + crew + ".jpg");
 		imBuilder.originalContentUrl(uri);
 		imBuilder.previewImageUrl(uri);
 		return imBuilder.build();
