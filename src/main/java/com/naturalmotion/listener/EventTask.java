@@ -3,6 +3,7 @@ package com.naturalmotion.listener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.naturalmotion.event.EventDetector;
@@ -27,8 +28,10 @@ public class EventTask extends Thread implements CsrTask {
 	}
 
 	private void extracted(String x) {
-		eventDetector.add(new EventDetector(x));
-		eventUpdater.add(new EventUpdater(x));
+		if (StringUtils.isNotBlank(x)) {
+			eventDetector.add(new EventDetector(x));
+			eventUpdater.add(new EventUpdater(x));
+		}
 	}
 
 	@Override
