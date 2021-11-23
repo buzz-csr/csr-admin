@@ -55,28 +55,28 @@ public class EventDetector {
 
 	private void detectUserToken(Authorization authorization) {
 		if (isTokenDetectionEnable()) {
-			List<List<Message>> conversations = crewResources.getConversations(authorization,
-					configuration.getString(crew + ".crew-id"));
-			if (hasTokenConversations(conversations)) {
-				List<Message> conv = conversations.get(1);
-				for (Message message : conv) {
-					if (isTokenDonationMessage(message)) {
-						detectTokenChange(message);
+			try {
+				List<List<Message>> conversations = crewResources.getConversations(authorization,
+				        configuration.getString(crew + ".crew-id"));
+				if (hasTokenConversations(conversations)) {
+					List<Message> conv = conversations.get(1);
+					for (Message message : conv) {
+						if (isTokenDonationMessage(message)) {
+							detectTokenChange(message);
+						}
 					}
 				}
+			} catch (Exception e) {
+				log.error("Error detecting user token donation", e);
 			}
 		}
 	}
 
-	private void detectTokenChange(Message message) {
-		try {
-			UserToken dbMessage = userTokenDao.readUserToken(message.getId());
-			if (isUserDonationToSend(message, dbMessage)) {
-				userTokenDao.insertUserToken(createToken(message));
-				// messageService.sendUserToken()
-			}
-		} catch (SQLException e) {
-			log.error("Error from UserToken Dao", e);
+	private void detectTokenChange(Message message) throws SQLException {
+		UserToken dbMessage = userTokenDao.readUserToken(message.getId());
+		if (isUserDonationToSend(message, dbMessage)) {
+			userTokenDao.insertUserToken(createToken(message));
+			// messageService.sendUserToken()
 		}
 	}
 
@@ -105,8 +105,8 @@ public class EventDetector {
 	}
 
 	private void detectWilcards(Authorization authorization) {
-		List<Card> wildcards = crewResources.getWildcards(authorization);
 		try {
+			List<Card> wildcards = crewResources.getWildcards(authorization);
 			Token read = dao.read(crew);
 
 			if (read != null) {
@@ -114,13 +114,13 @@ public class EventDetector {
 				detectWilcardChanges(read.getSilver(), wildcards, TOKEN_RARITY.SILVER);
 				detectWilcardChanges(read.getBronze(), wildcards, TOKEN_RARITY.BRONZE);
 			}
-		} catch (SQLException e) {
-			log.error("Error read wilcards from database", e);
+		} catch (Exception e) {
+			log.error("Error detecting wilcard changes", e);
 		}
 	}
 
 	private void detectWilcardChanges(com.naturalmotion.database.token.Card dbCard, List<Card> wildcards,
-			TOKEN_RARITY rarity) {
+	        TOKEN_RARITY rarity) {
 		Card actualCard = filterCard(rarity, wildcards);
 		if (dbCard != null && isChanged(rarity, dbCard, actualCard)) {
 			if (WILCARD_STATUS.COMPLETE.getNmValue().equals(actualCard.getStatus())) {
