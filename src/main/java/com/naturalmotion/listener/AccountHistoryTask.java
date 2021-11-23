@@ -19,7 +19,7 @@ import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.history.HistoryCleaner;
 import com.naturalmotion.webservice.service.history.HistoryUpdater;
 
-public class AccountHistoryTask implements CsrTask {
+public class AccountHistoryTask extends Thread implements CsrTask {
 
 	private static final int TIMEOUT = 30 * 60 * 1000; // 30 min
 
@@ -102,7 +102,7 @@ public class AccountHistoryTask implements CsrTask {
 	}
 
 	@Override
-	public void stop() {
+	public void stopTask() {
 		state = STATE.STOPPING;
 	}
 

@@ -14,10 +14,6 @@ public class ApplicationListener implements ServletContextListener {
 
 	private final Logger log = Logger.getLogger(ApplicationListener.class);
 
-	private Thread threadRedMembers;
-	private Thread threadRedCrew;
-
-	private Thread eventThread;
 	private EventTask eventTask;
 	private Server server;
 	private AccountHistoryTask accountHistoryTask;
@@ -31,15 +27,13 @@ public class ApplicationListener implements ServletContextListener {
 			new DatabaseInitializer().init();
 
 			eventTask = new EventTask();
-			eventThread = new Thread(eventTask);
-			eventThread.start();
+			eventTask.start();
 
 			accountHistoryTask = new AccountHistoryTask("rouge");
-			threadRedMembers = new Thread(accountHistoryTask);
-			threadRedMembers.start();
+			accountHistoryTask.start();
+
 			crewHistoryTask = new CrewHistoryTask("rouge");
-			threadRedCrew = new Thread(crewHistoryTask);
-			threadRedCrew.start();
+			crewHistoryTask.start();
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 
@@ -64,10 +58,6 @@ public class ApplicationListener implements ServletContextListener {
 		stopTask(crewHistoryTask);
 		stopTask(eventTask);
 
-		stopThread(threadRedMembers);
-		stopThread(threadRedCrew);
-		stopThread(eventThread);
-
 		if (server != null) {
 			server.stop();
 			while (server.isRunning(false)) {
@@ -79,20 +69,12 @@ public class ApplicationListener implements ServletContextListener {
 
 	private void stopTask(CsrTask task) {
 		if (task != null) {
-			task.stop();
+			task.stopTask();
 			while (task.isRunning()) {
-				log.info("Stopping " + task.getClass().getCanonicalName() + "...");
+				log.info("Stopping " + task.getClass().getName() + "...");
 			}
-			log.info(task.getClass().getCanonicalName() + " stopped");
+			log.info(task.getClass().getName() + " stopped");
 		}
-	}
-
-	private void stopThread(Thread thread) {
-		thread.interrupt();
-		while (!thread.isInterrupted()) {
-			log.info("Stopping " + thread.getClass().getCanonicalName() + "...");
-		}
-		log.info(thread.getClass().getCanonicalName() + " stopped");
 	}
 
 }

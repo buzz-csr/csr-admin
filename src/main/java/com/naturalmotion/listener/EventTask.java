@@ -9,7 +9,7 @@ import com.naturalmotion.event.EventDetector;
 import com.naturalmotion.event.EventUpdater;
 import com.naturalmotion.webservice.configuration.Configuration;
 
-public class EventTask implements CsrTask {
+public class EventTask extends Thread implements CsrTask {
 
 	private Logger log = Logger.getLogger(EventTask.class);
 
@@ -52,7 +52,7 @@ public class EventTask implements CsrTask {
 	}
 
 	@Override
-	public void stop() {
+	public void stopTask() {
 		state = STATE.STOPPING;
 	}
 

@@ -20,7 +20,7 @@ import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 
-public class CrewHistoryTask implements CsrTask {
+public class CrewHistoryTask extends Thread implements CsrTask {
 
 	private static final int TIMEOUT = 5 * 60 * 1000; // 5asjs min
 
@@ -92,7 +92,7 @@ public class CrewHistoryTask implements CsrTask {
 
 			if (lastHistories.size() > 0) {
 				CrewHistory lastSnapshot = lastHistories.stream()
-						.max((x, y) -> x.getSnapshotDate().compareTo(y.getSnapshotDate())).get();
+				        .max((x, y) -> x.getSnapshotDate().compareTo(y.getSnapshotDate())).get();
 				if (lastSnapshot != null && lastSnapshot.getTotal() <= crewHistory.getTotal()) {
 					crewHistory.setDiff(crewHistory.getTotal() - lastSnapshot.getTotal());
 				} else {
@@ -107,7 +107,7 @@ public class CrewHistoryTask implements CsrTask {
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_YEAR, -10);
 			histories.setHistories(lastHistories.stream().filter(x -> x.getSnapshotDate().after(calendar.getTime()))
-					.collect(Collectors.toList()));
+			        .collect(Collectors.toList()));
 
 			write(histories, crewFile);
 		} catch (IOException e) {
@@ -122,7 +122,7 @@ public class CrewHistoryTask implements CsrTask {
 	}
 
 	@Override
-	public void stop() {
+	public void stopTask() {
 		state = STATE.STOPPING;
 	}
 

@@ -1,8 +1,8 @@
 package com.naturalmotion.listener;
 
-public interface CsrTask extends Runnable {
+public interface CsrTask {
 
-	public void stop();
+	public void stopTask();
 
 	public boolean isRunning();
 }
