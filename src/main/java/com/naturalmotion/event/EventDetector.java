@@ -74,9 +74,11 @@ public class EventDetector {
 
 	private void detectTokenChange(Message message) throws SQLException {
 		UserToken dbMessage = userTokenDao.readUserToken(message.getId());
-		if (isUserDonationToSend(message, dbMessage)) {
+		if (isUserDonationToSend(dbMessage)) {
 			userTokenDao.insertUserToken(createToken(message));
-			// messageService.sendUserToken()
+			com.naturalmotion.webservice.service.json.tchat.Card card = message.getMeta().getCard();
+			messageService.pushMessage(messageFactory.createUserTokenDonation(message.getZid(),
+			        TOKEN_RARITY.from(card.getRarity()).getName(), card.getPaidDelta()), LINE_USER);
 		}
 	}
 
@@ -100,7 +102,7 @@ public class EventDetector {
 		return message.getMeta() != null && message.getMeta().getCard() != null;
 	}
 
-	private boolean isUserDonationToSend(Message message, UserToken dbMessage) {
+	private boolean isUserDonationToSend(UserToken dbMessage) {
 		return dbMessage == null;
 	}
 

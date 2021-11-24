@@ -114,4 +114,16 @@ public class MessageFactory {
 		imBuilder.previewImageUrl(uri);
 		return imBuilder.build();
 	}
+
+	public TextMessage createUserTokenDonation(String playerName, String name, int paidDelta) {
+		TextMessageBuilder tmBuilder = TextMessage.builder();
+		StringBuilder message = new StringBuilder();
+		message.append(playerName);
+		message.append(" a posé ");
+		message.append(paidDelta);
+		message.append(" sur le ");
+		message.append(name).append("%");
+		tmBuilder.text(message.toString());
+		return tmBuilder.build();
+	}
 }

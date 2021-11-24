@@ -155,4 +155,5 @@ public class EventDetectorTest {
 		Assertions.assertThat(textMessage.getAllValues()).hasSize(3);
 		verifyZeroInteractions(messageService);
 	}
+
 }

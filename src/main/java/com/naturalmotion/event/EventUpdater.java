@@ -1,6 +1,5 @@
 package com.naturalmotion.event;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -33,15 +32,14 @@ public class EventUpdater {
 
 	public void update() {
 		Authorization authorization = authorizationFactory.get(crew);
-
-		List<Card> wildcards = crewResources.getWildcards(authorization);
 		try {
+			List<Card> wildcards = crewResources.getWildcards(authorization);
 			Token convert = converter.convert(wildcards, crew);
 
 			if (dao.update(convert) == 0) {
 				dao.insert(convert);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			log.error("Error updating event data", e);
 		}
 	}

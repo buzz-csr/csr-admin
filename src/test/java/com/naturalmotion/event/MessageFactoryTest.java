@@ -58,4 +58,10 @@ public class MessageFactoryTest {
 		return card;
 	}
 
+	@Test
+	public void testCreateUserTokenDonation() {
+		Assertions.assertThat(factory.createUserTokenDonation("playerName", "20", 10).getText())
+		        .isEqualTo("playerName a posé 10 sur le 20%");
+	}
+
 }
