@@ -25,10 +25,15 @@ import com.line.api.MessageService;
 import com.linecorp.bot.model.message.TextMessage;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
+import com.naturalmotion.database.dao.UserTokenDao;
 import com.naturalmotion.database.token.Token;
+import com.naturalmotion.database.usertoken.UserToken;
 import com.naturalmotion.webservice.api.CrewResources;
+import com.naturalmotion.webservice.api.Member;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
+import com.naturalmotion.webservice.service.json.tchat.Message;
+import com.naturalmotion.webservice.service.json.tchat.Metadata;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventDetectorTest {
@@ -48,6 +53,9 @@ public class EventDetectorTest {
 	private TokenDao dao;
 
 	@Mock
+	private UserTokenDao userDao;
+
+	@Mock
 	private AuthorizationFactory authorizationFactory;
 
 	@Mock
@@ -62,6 +70,14 @@ public class EventDetectorTest {
 	@Before
 	public void setup() throws SQLException {
 		doReturn(realWilcards()).when(crewResources).getWildcards(any());
+		doReturn(userToken("id5", "zid5")).when(userDao).readUserToken("id5");
+	}
+
+	private UserToken userToken(String id, String playerId) {
+		UserToken userToken = new UserToken();
+		userToken.setId(id);
+		userToken.setUser(playerId);
+		return userToken;
 	}
 
 	private Token dbWildcards(String goldStatus, String silverStatus, String bronzeStatus) {
@@ -156,4 +172,60 @@ public class EventDetectorTest {
 		verifyZeroInteractions(messageService);
 	}
 
+	@Test
+	public void testDetectTokenDonation() {
+		doReturn(conversations()).when(crewResources).getConversations(any(), anyString());
+		doReturn(members()).when(crewResources).getMembers(any());
+		eventDetector.detect();
+		verify(messageService, times(1)).pushMessage(textMessage.capture(), anyString());
+		Assertions.assertThat(textMessage.getValue().getText())
+		.isEqualTo("zid2 a posé 10 sur le 150%\nname4 a posé 5 sur le 150%");
+	}
+
+	private List<Member> members() {
+		List<Member> members = new ArrayList<>();
+		members.add(member("id4", "name4"));
+		return members;
+	}
+
+	private List<List<Message>> conversations() {
+		List<List<Message>> conversations = new ArrayList<>();
+		List<Message> serverConversations = new ArrayList<>();
+		serverConversations.add(message("id1", "zid1", null));
+		serverConversations.add(message("id2", "zid2", metadata(10)));
+		serverConversations.add(message("id3", "zid3", metadata(0)));
+		serverConversations.add(message("id4", "zid4", metadata(5)));
+		serverConversations.add(message("id5", "zid5", metadata(6)));
+		conversations.add(new ArrayList<>());
+		conversations.add(serverConversations);
+		return conversations;
+	}
+
+	private Member member(String id, String name) {
+		Member member = new Member();
+		member.setId(id);
+		member.setName(name);
+		return member;
+	}
+
+	private Metadata metadata(int paidDelta) {
+		Metadata metadata = new Metadata();
+		metadata.setCard(card(paidDelta));
+		return metadata;
+	}
+
+	private com.naturalmotion.webservice.service.json.tchat.Card card(int paidDelta) {
+		com.naturalmotion.webservice.service.json.tchat.Card card = new com.naturalmotion.webservice.service.json.tchat.Card();
+		card.setPaidDelta(paidDelta);
+		card.setRarity(TOKEN_RARITY.GOLD.getNmValue());
+		return card;
+	}
+
+	private Message message(String id, String playerId, Metadata meta) {
+		Message message = new Message();
+		message.setZid(playerId);
+		message.setId(id);
+		message.setMeta(meta);
+		return message;
+	}
 }

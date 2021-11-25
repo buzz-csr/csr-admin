@@ -2,8 +2,10 @@ package com.naturalmotion.event;
 
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.line.api.MessageService;
@@ -15,6 +17,7 @@ import com.naturalmotion.database.dao.UserTokenDao;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.database.usertoken.UserToken;
 import com.naturalmotion.webservice.api.CrewResources;
+import com.naturalmotion.webservice.api.Member;
 import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
@@ -50,36 +53,62 @@ public class EventDetector {
 	public void detect() {
 		Authorization authorization = authorizationFactory.get(crew);
 		detectWilcards(authorization);
-		detectUserToken(authorization);
-	}
 
-	private void detectUserToken(Authorization authorization) {
 		if (isTokenDetectionEnable()) {
-			try {
-				List<List<Message>> conversations = crewResources.getConversations(authorization,
-				        configuration.getString(crew + ".crew-id"));
-				if (hasTokenConversations(conversations)) {
-					List<Message> conv = conversations.get(1);
-					for (Message message : conv) {
-						if (isTokenDonationMessage(message)) {
-							detectTokenChange(message);
-						}
-					}
-				}
-			} catch (Exception e) {
-				log.error("Error detecting user token donation", e);
-			}
+			detectUserToken(authorization);
 		}
 	}
 
-	private void detectTokenChange(Message message) throws SQLException {
+	private void detectUserToken(Authorization authorization) {
+		List<TextMessage> tMessages = new ArrayList<>();
+		try {
+			List<List<Message>> conversations = crewResources.getConversations(authorization,
+					configuration.getString(crew + ".crew-id"));
+			if (hasTokenConversations(conversations)) {
+				List<Message> conv = conversations.get(1);
+
+				List<Member> members = crewResources.getMembers(authorization);
+
+				for (Message message : conv) {
+					if (isTokenDonationMessage(message)) {
+						TextMessage tMessage = detectTokenChange(message, members);
+						if (tMessage != null) {
+							tMessages.add(tMessage);
+						}
+					}
+				}
+			}
+
+			if (!tMessages.isEmpty()) {
+				messageService.pushMessage(messageFactory.join(tMessages), LINE_USER);
+			}
+		} catch (Exception e) {
+			log.error("Error detecting user token donation", e);
+		}
+	}
+
+	private TextMessage detectTokenChange(Message message, List<Member> members) throws SQLException {
+		TextMessage textMessage = null;
 		UserToken dbMessage = userTokenDao.readUserToken(message.getId());
 		if (isUserDonationToSend(dbMessage)) {
 			userTokenDao.insertUserToken(createToken(message));
 			com.naturalmotion.webservice.service.json.tchat.Card card = message.getMeta().getCard();
-			messageService.pushMessage(messageFactory.createUserTokenDonation(message.getZid(),
-			        TOKEN_RARITY.from(card.getRarity()).getName(), card.getPaidDelta()), LINE_USER);
+			Member actualMember = members.stream().filter(x -> message.getId().equals(x.getId())).findFirst()
+					.orElse(null);
+			textMessage = messageFactory.createUserTokenDonation(getUserName(message, actualMember),
+					TOKEN_RARITY.from(card.getRarity()).getName(), card.getPaidDelta());
 		}
+		return textMessage;
+	}
+
+	private String getUserName(Message message, Member actualMember) {
+		String name = null;
+		if (actualMember != null && StringUtils.isNoneBlank(actualMember.getName())) {
+			name = actualMember.getName();
+		} else {
+			name = message.getZid();
+		}
+		return name;
 	}
 
 	private boolean hasTokenConversations(List<List<Message>> conversations) {
@@ -99,7 +128,8 @@ public class EventDetector {
 	}
 
 	private boolean isTokenDonationMessage(Message message) {
-		return message.getMeta() != null && message.getMeta().getCard() != null;
+		return message.getMeta() != null && message.getMeta().getCard() != null
+				&& message.getMeta().getCard().getPaidDelta() > 0;
 	}
 
 	private boolean isUserDonationToSend(UserToken dbMessage) {
@@ -122,7 +152,7 @@ public class EventDetector {
 	}
 
 	private void detectWilcardChanges(com.naturalmotion.database.token.Card dbCard, List<Card> wildcards,
-	        TOKEN_RARITY rarity) {
+			TOKEN_RARITY rarity) {
 		Card actualCard = filterCard(rarity, wildcards);
 		if (dbCard != null && isChanged(rarity, dbCard, actualCard)) {
 			if (WILCARD_STATUS.COMPLETE.getNmValue().equals(actualCard.getStatus())) {

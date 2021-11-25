@@ -3,6 +3,7 @@ package com.naturalmotion.event;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.linecorp.bot.model.message.ImageMessage;
@@ -109,7 +110,7 @@ public class MessageFactory {
 	public ImageMessage createImage(Card actualCard, String crew) throws URISyntaxException {
 		ImageMessageBuilder imBuilder = ImageMessage.builder();
 		URI uri = new URI("https://mod.csr-lesnains.fr/csr-admin/images/line/"
-		        + TOKEN_RARITY.from(actualCard.getRarity()).getName() + "_" + crew + ".jpg");
+				+ TOKEN_RARITY.from(actualCard.getRarity()).getName() + "_" + crew + ".jpg");
 		imBuilder.originalContentUrl(uri);
 		imBuilder.previewImageUrl(uri);
 		return imBuilder.build();
@@ -123,6 +124,23 @@ public class MessageFactory {
 		message.append(paidDelta);
 		message.append(" sur le ");
 		message.append(name).append("%");
+		tmBuilder.text(message.toString());
+		return tmBuilder.build();
+	}
+
+	public TextMessage join(List<TextMessage> tMessages) {
+		TextMessageBuilder tmBuilder = TextMessage.builder();
+		StringBuilder message = new StringBuilder();
+		Iterator<TextMessage> iterator = tMessages.iterator();
+		TextMessage next = null;
+		if (iterator.hasNext()) {
+			next = iterator.next();
+			message.append(next.getText());
+		}
+		while (iterator.hasNext()) {
+			message.append("\n");
+			message.append(iterator.next().getText());
+		}
 		tmBuilder.text(message.toString());
 		return tmBuilder.build();
 	}
