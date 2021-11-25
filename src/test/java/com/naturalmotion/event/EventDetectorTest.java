@@ -179,12 +179,12 @@ public class EventDetectorTest {
 		eventDetector.detect();
 		verify(messageService, times(1)).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getValue().getText())
-		.isEqualTo("zid2 a posé 10 sur le 150%\nname4 a posé 5 sur le 150%");
+		        .isEqualTo("zid2 a posé 10 sur le 150%\nname4 a posé 5 sur le 150%");
 	}
 
 	private List<Member> members() {
 		List<Member> members = new ArrayList<>();
-		members.add(member("id4", "name4"));
+		members.add(member("zid4", "name4"));
 		return members;
 	}
 
