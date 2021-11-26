@@ -25,7 +25,7 @@ public class ApplicationListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		try {
-			server = Server.createTcpServer("-tcpAllowOthers").start();
+			server = Server.createTcpServer("-tcp", "-tcpAllowOthers").start();
 
 			new DatabaseInitializer().init();
 
