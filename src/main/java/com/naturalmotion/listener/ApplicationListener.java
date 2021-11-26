@@ -25,7 +25,7 @@ public class ApplicationListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		try {
-			server = Server.createTcpServer("-tcp", "-tcpAllowOthers").start();
+			Class.forName("org.h2.Driver");
 
 			new DatabaseInitializer().init();
 
@@ -45,7 +45,7 @@ public class ApplicationListener implements ServletContextListener {
 					stopAll();
 				}
 			});
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			log.error("Error initializing database", e);
 		}
 
