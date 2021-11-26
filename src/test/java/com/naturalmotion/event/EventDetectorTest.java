@@ -137,7 +137,7 @@ public class EventDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$$ $$$$ $$$$$ $");
+		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -147,7 +147,7 @@ public class EventDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$$ $$$ $$$$$ $");
+		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -158,7 +158,7 @@ public class EventDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$$ $$$ $$$$$ $");
+		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
 

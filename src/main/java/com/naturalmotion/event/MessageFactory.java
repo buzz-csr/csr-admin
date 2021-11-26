@@ -33,13 +33,8 @@ public class MessageFactory {
 		TextMessageBuilder tmBuilder = TextMessage.builder();
 		StringBuilder message = new StringBuilder();
 		List<Emoji> emojis = new ArrayList<TextMessage.Emoji>();
-
-		// Joker
-		addJoker(emojis);
-
 		switch (tokenType) {
 		case GOLD:
-			message.append("$$$$$ ");
 			message.append("$$$$");
 			message.append(" $$$$$ $");
 
@@ -50,7 +45,6 @@ public class MessageFactory {
 			emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "071"));
 			break;
 		case SILVER:
-			message.append("$$$$$ ");
 			message.append("$$$");
 			message.append(" $$$$$ $");
 
@@ -60,7 +54,6 @@ public class MessageFactory {
 			emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "071"));
 			break;
 		case BRONZE:
-			message.append("$$$$$ ");
 			message.append("$$$");
 			message.append(" $$$$$ $");
 
@@ -83,20 +76,13 @@ public class MessageFactory {
 	}
 
 	private void addFull(List<Emoji> emojis) {
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "042"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "038"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "031"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "035"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "040"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "067"));
-	}
+		emojis.add(emoji(emojis.size() + 1, "5ac21a8c040ab15980c9b43f", "042"));
+		emojis.add(emoji(emojis.size() + 1, "5ac21a8c040ab15980c9b43f", "038"));
+		emojis.add(emoji(emojis.size() + 1, "5ac21a8c040ab15980c9b43f", "031"));
+		emojis.add(emoji(emojis.size() + 1, "5ac21a8c040ab15980c9b43f", "035"));
+		emojis.add(emoji(emojis.size() + 1, "5ac21a8c040ab15980c9b43f", "040"));
 
-	private void addJoker(List<Emoji> emojis) {
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "010"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "041"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "037"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "031"));
-		emojis.add(emoji(emojis.size(), "5ac21a8c040ab15980c9b43f", "044"));
+		emojis.add(emoji(emojis.size() + 2, "5ac21a8c040ab15980c9b43f", "067"));
 	}
 
 	private Emoji emoji(int index, String productId, String emojiId) {
@@ -110,7 +96,7 @@ public class MessageFactory {
 	public ImageMessage createImage(Card actualCard, String crew) throws URISyntaxException {
 		ImageMessageBuilder imBuilder = ImageMessage.builder();
 		URI uri = new URI("https://mod.csr-lesnains.fr/csr-admin/images/line/"
-				+ TOKEN_RARITY.from(actualCard.getRarity()).getName() + "_" + crew + ".jpg");
+		        + TOKEN_RARITY.from(actualCard.getRarity()).getName() + "_" + crew + ".jpg");
 		imBuilder.originalContentUrl(uri);
 		imBuilder.previewImageUrl(uri);
 		return imBuilder.build();

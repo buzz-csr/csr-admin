@@ -18,40 +18,40 @@ public class MessageFactoryTest {
 
 	@Test
 	public void testCreateTokenFull() {
-		Assertions.assertThat(factory.createGoldFull().getText()).isEqualTo("$$$$$ $$$$ $$$$$ $");
-		Assertions.assertThat(factory.createGoldFull().getEmojis().size()).isEqualTo(15);
-		Assertions.assertThat(factory.createSilverFull().getText()).isEqualTo("$$$$$ $$$ $$$$$ $");
-		Assertions.assertThat(factory.createSilverFull().getEmojis().size()).isEqualTo(14);
-		Assertions.assertThat(factory.createBronzeFull().getText()).isEqualTo("$$$$$ $$$ $$$$$ $");
-		Assertions.assertThat(factory.createBronzeFull().getEmojis().size()).isEqualTo(14);
+		Assertions.assertThat(factory.createGoldFull().getText()).isEqualTo("$$$$ $$$$$ $");
+		Assertions.assertThat(factory.createGoldFull().getEmojis().size()).isEqualTo(10);
+		Assertions.assertThat(factory.createSilverFull().getText()).isEqualTo("$$$ $$$$$ $");
+		Assertions.assertThat(factory.createSilverFull().getEmojis().size()).isEqualTo(9);
+		Assertions.assertThat(factory.createBronzeFull().getText()).isEqualTo("$$$ $$$$$ $");
+		Assertions.assertThat(factory.createBronzeFull().getEmojis().size()).isEqualTo(9);
 	}
 
 	@Test
 	public void testCreateTokenActive() throws URISyntaxException {
 		Assertions
-		.assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.GOLD), CREW)
-				.getOriginalContentUrl().toString())
-		.isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/150_rouge.jpg");
+		        .assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.GOLD), CREW)
+		                .getOriginalContentUrl().toString())
+		        .isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/150_rouge.jpg");
 		Assertions
-		.assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.GOLD), CREW)
-				.getPreviewImageUrl().toString())
-		.isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/150_rouge.jpg");
+		        .assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.GOLD), CREW)
+		                .getPreviewImageUrl().toString())
+		        .isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/150_rouge.jpg");
 		Assertions
-		.assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.SILVER), CREW)
-				.getOriginalContentUrl().toString())
-		.isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/70_rouge.jpg");
+		        .assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.SILVER), CREW)
+		                .getOriginalContentUrl().toString())
+		        .isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/70_rouge.jpg");
 		Assertions
-		.assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.SILVER), CREW)
-				.getPreviewImageUrl().toString())
-		.isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/70_rouge.jpg");
+		        .assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.SILVER), CREW)
+		                .getPreviewImageUrl().toString())
+		        .isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/70_rouge.jpg");
 		Assertions
-		.assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.BRONZE), CREW)
-				.getOriginalContentUrl().toString())
-		.isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/30_rouge.jpg");
+		        .assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.BRONZE), CREW)
+		                .getOriginalContentUrl().toString())
+		        .isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/30_rouge.jpg");
 		Assertions
-		.assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.BRONZE), CREW)
-				.getPreviewImageUrl().toString())
-		.isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/30_rouge.jpg");
+		        .assertThat(factory.createImage(card(WILCARD_STATUS.ACTIVE, TOKEN_RARITY.BRONZE), CREW)
+		                .getPreviewImageUrl().toString())
+		        .isEqualTo("https://mod.csr-lesnains.fr/csr-admin/images/line/30_rouge.jpg");
 	}
 
 	private Card card(WILCARD_STATUS status, TOKEN_RARITY rarity) {
@@ -64,7 +64,7 @@ public class MessageFactoryTest {
 	@Test
 	public void testCreateUserTokenDonation() {
 		Assertions.assertThat(factory.createUserTokenDonation("playerName", "20", 10).getText())
-		.isEqualTo("playerName a posé 10 sur le 20%");
+		        .isEqualTo("playerName a posé 10 sur le 20%");
 	}
 
 	@Test
