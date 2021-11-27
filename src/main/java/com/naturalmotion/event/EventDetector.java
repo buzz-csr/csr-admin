@@ -28,8 +28,6 @@ public class EventDetector {
 
 	private Logger log = Logger.getLogger(EventDetector.class);
 
-	private static final String LINE_USER = "U34b21f21232f2c9134cbb741eedfa6d2";
-
 	private final String crew;
 
 	private CrewResources crewResources = new CrewResources();
@@ -80,7 +78,7 @@ public class EventDetector {
 			}
 
 			if (!tMessages.isEmpty()) {
-				messageService.pushMessage(messageFactory.join(tMessages), LINE_USER);
+				messageService.pushMessage(messageFactory.join(tMessages));
 			}
 		} catch (Exception e) {
 			log.error("Error detecting user token donation", e);
@@ -170,11 +168,11 @@ public class EventDetector {
 				default:
 					break;
 				}
-				messageService.pushMessage(textMessage, LINE_USER);
+				messageService.pushMessage(textMessage);
 			}
 			if (WILCARD_STATUS.ACTIVE.getNmValue().equals(actualCard.getStatus())) {
 				try {
-					messageService.pushImage(messageFactory.createImage(actualCard, crew), LINE_USER);
+					messageService.pushImage(messageFactory.createImage(actualCard, crew));
 				} catch (URISyntaxException e) {
 					log.error("Impossible d'envoyer l'image");
 				}

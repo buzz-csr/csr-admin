@@ -136,7 +136,7 @@ public class EventDetectorTest {
 		doReturn(realWilcards(COMPLETE, SILVER_STATUS, BRONZE_STATUS)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService).pushMessage(textMessage.capture(), anyString());
+		verify(messageService).pushMessage(textMessage.capture());
 		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
@@ -146,7 +146,7 @@ public class EventDetectorTest {
 		doReturn(realWilcards(GOLD_STATUS, COMPLETE, BRONZE_STATUS)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService).pushMessage(textMessage.capture(), anyString());
+		verify(messageService).pushMessage(textMessage.capture());
 		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
@@ -157,7 +157,7 @@ public class EventDetectorTest {
 
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService).pushMessage(textMessage.capture(), anyString());
+		verify(messageService).pushMessage(textMessage.capture());
 		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
 	}
@@ -167,7 +167,7 @@ public class EventDetectorTest {
 		doReturn(realWilcards(COMPLETE, COMPLETE, COMPLETE)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		eventDetector.detect();
-		verify(messageService, times(3)).pushMessage(textMessage.capture(), anyString());
+		verify(messageService, times(3)).pushMessage(textMessage.capture());
 		Assertions.assertThat(textMessage.getAllValues()).hasSize(3);
 		verifyZeroInteractions(messageService);
 	}
@@ -177,7 +177,7 @@ public class EventDetectorTest {
 		doReturn(conversations()).when(crewResources).getConversations(any(), anyString());
 		doReturn(members()).when(crewResources).getMembers(any());
 		eventDetector.detect();
-		verify(messageService, times(1)).pushMessage(textMessage.capture(), anyString());
+		verify(messageService, times(1)).pushMessage(textMessage.capture());
 		Assertions.assertThat(textMessage.getValue().getText())
 		        .isEqualTo("zid2 a posé 10 sur le 150%\nname4 a posé 5 sur le 150%");
 	}
