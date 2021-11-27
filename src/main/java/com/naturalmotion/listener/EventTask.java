@@ -12,6 +12,8 @@ import com.naturalmotion.webservice.configuration.Configuration;
 
 public class EventTask extends Thread implements CsrTask {
 
+	private static final int TIMEOUT = 30000;
+
 	private Logger log = Logger.getLogger(EventTask.class);
 
 	private Configuration configuration = new Configuration();
@@ -21,6 +23,8 @@ public class EventTask extends Thread implements CsrTask {
 	private List<EventUpdater> eventUpdater = new ArrayList<>();
 
 	private STATE state = STATE.RUNNING;
+
+	private long chrono = System.currentTimeMillis();
 
 	public EventTask() {
 		List<String> list = configuration.getList("token.task.crew");
@@ -36,22 +40,16 @@ public class EventTask extends Thread implements CsrTask {
 
 	@Override
 	public void run() {
+		log.info("EventTask started !");
 		while (STATE.RUNNING.equals(state)) {
-			eventDetector.stream().forEach(x -> x.detect());
-			eventUpdater.stream().forEach(x -> x.update());
-
-			waiting();
+			if (System.currentTimeMillis() - chrono > TIMEOUT) {
+				chrono = System.currentTimeMillis();
+				eventDetector.stream().forEach(x -> x.detect());
+				eventUpdater.stream().forEach(x -> x.update());
+			}
 		}
 		state = STATE.STOP;
 		log.info("EventTask thread has been stopped");
-	}
-
-	private void waiting() {
-		try {
-			Thread.sleep(30000);
-		} catch (InterruptedException e) {
-			log.error("Error waiting", e);
-		}
 	}
 
 	@Override

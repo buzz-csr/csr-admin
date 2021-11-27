@@ -22,6 +22,7 @@ public class TokenDao {
 			executeUpdate += insertToken(token.getCrew(), token.getBronze(), TOKEN_RARITY.BRONZE, connection);
 			executeUpdate += insertToken(token.getCrew(), token.getSilver(), TOKEN_RARITY.SILVER, connection);
 			executeUpdate += insertToken(token.getCrew(), token.getGold(), TOKEN_RARITY.GOLD, connection);
+			connection.commit();
 		}
 		return executeUpdate;
 	}
@@ -32,6 +33,7 @@ public class TokenDao {
 			executeUpdate += update(token.getCrew(), token.getBronze(), TOKEN_RARITY.BRONZE, connection);
 			executeUpdate += update(token.getCrew(), token.getSilver(), TOKEN_RARITY.SILVER, connection);
 			executeUpdate += update(token.getCrew(), token.getGold(), TOKEN_RARITY.GOLD, connection);
+			connection.commit();
 		}
 		return executeUpdate;
 	}

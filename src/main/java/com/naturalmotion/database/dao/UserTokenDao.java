@@ -16,7 +16,7 @@ public class UserTokenDao {
 	public UserToken readUserToken(String id) throws SQLException {
 		UserToken userToken = null;
 		try (Connection connection = ConnectionFactory.create();
-				PreparedStatement statement = connection.prepareStatement(SELECT_USER_TOKEN)) {
+		        PreparedStatement statement = connection.prepareStatement(SELECT_USER_TOKEN)) {
 			statement.setString(1, id);
 			try (ResultSet result = statement.executeQuery();) {
 				while (result.next()) {
@@ -27,6 +27,7 @@ public class UserTokenDao {
 					userToken.setPaid(result.getInt("paid"));
 				}
 			}
+			connection.commit();
 		}
 		return userToken;
 	}
@@ -35,12 +36,13 @@ public class UserTokenDao {
 		int result = 0;
 		if (token != null) {
 			try (Connection connection = ConnectionFactory.create();
-					PreparedStatement statement = connection.prepareStatement(INSERT_USER_TOKEN)) {
+			        PreparedStatement statement = connection.prepareStatement(INSERT_USER_TOKEN)) {
 				statement.setString(1, token.getId());
 				statement.setString(2, token.getUser());
 				statement.setString(3, token.getRarity());
 				statement.setInt(4, token.getPaid());
 				result = statement.executeUpdate();
+				connection.commit();
 			}
 		}
 		return result;

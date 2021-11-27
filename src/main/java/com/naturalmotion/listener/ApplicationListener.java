@@ -25,9 +25,11 @@ public class ApplicationListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		try {
+			long start = System.currentTimeMillis();
 			Class.forName("org.h2.Driver");
 
 			new DatabaseInitializer().init();
+			log.info("Database has been initialized !");
 
 			eventTask = new EventTask();
 			eventTask.start();
@@ -45,6 +47,8 @@ public class ApplicationListener implements ServletContextListener {
 					stopAll();
 				}
 			});
+
+			log.info("Server has been started in " + (System.currentTimeMillis() - start) + " ms");
 		} catch (SQLException | ClassNotFoundException e) {
 			log.error("Error initializing database", e);
 		}

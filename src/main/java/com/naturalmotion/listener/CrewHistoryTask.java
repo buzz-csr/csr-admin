@@ -22,7 +22,7 @@ import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 
 public class CrewHistoryTask extends Thread implements CsrTask {
 
-	private static final int TIMEOUT = 5 * 60 * 1000; // 5asjs min
+	private static final int TIMEOUT = 5 * 60 * 1000; // 5 min
 
 	private final Logger log = Logger.getLogger(CrewHistoryTask.class);
 
@@ -34,12 +34,16 @@ public class CrewHistoryTask extends Thread implements CsrTask {
 
 	private STATE state = STATE.RUNNING;
 
+	private long chrono = System.currentTimeMillis();
+
 	public CrewHistoryTask(String team) {
 		this.team = team;
 	}
 
 	@Override
 	public void run() {
+		log.info(CrewHistoryTask.class.getName() + " started !");
+
 		Configuration configuration = new Configuration();
 		File backup = new File(configuration.getString("working.directory") + "/HISTORY/");
 		if (!backup.exists()) {
@@ -49,25 +53,22 @@ public class CrewHistoryTask extends Thread implements CsrTask {
 		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 		Authorization authorization = authorizationFactory.get(team);
 		while (STATE.RUNNING.equals(state)) {
-			try {
-				Date date = new Date();
-				Crew crew = crewResources.getCrew(authorization);
-
-				updateCrewHistory(backup, date, crew);
-				wating();
-			} catch (Exception e) {
-				log.error("Error into AccountHistoryTask for team " + team, e);
-				wating();
+			if (System.currentTimeMillis() - chrono > TIMEOUT) {
+				chrono = System.currentTimeMillis();
+				doTask(backup, authorization);
 			}
 		}
 		state = STATE.STOP;
 	}
 
-	private void wating() {
+	private void doTask(File backup, Authorization authorization) {
 		try {
-			Thread.sleep(TIMEOUT);
-		} catch (InterruptedException e) {
-			log.error("Error waiting for team " + team, e);
+			Date date = new Date();
+			Crew crew = crewResources.getCrew(authorization);
+
+			updateCrewHistory(backup, date, crew);
+		} catch (Exception e) {
+			log.error("Error into AccountHistoryTask for team " + team, e);
 		}
 	}
 

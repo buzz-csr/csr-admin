@@ -28,7 +28,7 @@ public class EventDetector {
 
 	private Logger log = Logger.getLogger(EventDetector.class);
 
-	private static final String LINE_USER = "U34b21f21232f2c9134cbb741eedfa6d2";
+	private static final String LINE_USER = "Caadec4214a9c8fc4af36d20c14abef78";
 
 	private final String crew;
 
