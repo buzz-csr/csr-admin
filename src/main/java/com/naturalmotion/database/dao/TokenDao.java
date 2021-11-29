@@ -4,13 +4,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+
+import org.apache.log4j.Logger;
 
 import com.naturalmotion.database.ConnectionFactory;
+import com.naturalmotion.database.SqlLogBuilder;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.token.Card;
 import com.naturalmotion.database.token.Token;
 
 public class TokenDao {
+
+	private final Logger log = Logger.getLogger("sql");
 
 	private static final String INSERT_TOKEN = "INSERT INTO TOKEN VALUES (?,?,?,?,?)";
 	private static final String UPDATE_TOKEN = "UPDATE TOKEN SET status=?, paid=?, cost=? WHERE crew=? AND rarity=?";
@@ -45,7 +51,13 @@ public class TokenDao {
 			statement.setInt(3, card.getCost());
 			statement.setString(4, crew);
 			statement.setString(5, rarity.getNmValue());
-			return statement.executeUpdate();
+			int executeUpdate = statement.executeUpdate();
+
+			log.info(new SqlLogBuilder().build(UPDATE_TOKEN,
+			        Arrays.asList(card.getStatus(), card.getPaid(), card.getCost(), crew, rarity.getNmValue())) + ";"
+			        + executeUpdate);
+
+			return executeUpdate;
 		}
 	}
 
@@ -56,7 +68,13 @@ public class TokenDao {
 			statement.setString(3, card.getStatus());
 			statement.setInt(4, card.getPaid());
 			statement.setInt(5, card.getCost());
-			return statement.executeUpdate();
+			int executeUpdate = statement.executeUpdate();
+
+			log.info(new SqlLogBuilder().build(INSERT_TOKEN,
+			        Arrays.asList(crew, rarity.getNmValue(), card.getStatus(), card.getPaid(), card.getCost())) + ";"
+			        + executeUpdate);
+
+			return executeUpdate;
 		}
 	}
 
@@ -78,6 +96,8 @@ public class TokenDao {
 			statement.setString(1, crew);
 			statement.setString(2, rarity.getNmValue());
 			ResultSet result = statement.executeQuery();
+
+			log.info(new SqlLogBuilder().build(SELECT_TOKEN, Arrays.asList(crew, rarity.getNmValue())));
 			while (result.next()) {
 				card = new Card();
 				card.setStatus(result.getString("status"));
