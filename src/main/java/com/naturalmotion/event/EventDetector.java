@@ -123,7 +123,9 @@ public class EventDetector {
 		UserToken token = new UserToken();
 		token.setId(message.getId());
 		token.setUser(message.getZid());
-		token.setRarity(message.getMeta().getCard().getRarity());
+		com.naturalmotion.webservice.service.json.tchat.Card card = message.getMeta().getCard();
+		token.setRarity(card.getRarity());
+		token.setPaid(card.getPaidDelta());
 		return token;
 	}
 
