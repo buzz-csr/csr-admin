@@ -130,8 +130,8 @@ public class EventDetector {
 	}
 
 	private boolean isTokenDonationMessage(Message message) {
-		return message.getMeta() != null && message.getMeta().getCard() != null
-		        && message.getMeta().getCard().getPaidDelta() > 0;
+		return message.getMeta() != null && "WCARD_STATUS".equals(message.getMeta().getEventID())
+		        && message.getMeta().getCard() != null && message.getMeta().getCard().getPaidDelta() > 0;
 	}
 
 	private boolean isUserDonationToSend(UserToken dbMessage) {

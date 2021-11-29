@@ -192,10 +192,11 @@ public class EventDetectorTest {
 		List<List<Message>> conversations = new ArrayList<>();
 		List<Message> serverConversations = new ArrayList<>();
 		serverConversations.add(message("id1", "zid1", null));
-		serverConversations.add(message("id2", "zid2", metadata(10)));
-		serverConversations.add(message("id3", "zid3", metadata(0)));
-		serverConversations.add(message("id4", "zid4", metadata(5)));
-		serverConversations.add(message("id5", "zid5", metadata(6)));
+		serverConversations.add(message("id2", "zid2", metadata(10, "WCARD_STATUS")));
+		serverConversations.add(message("id3", "zid3", metadata(0, "WCARD_STATUS")));
+		serverConversations.add(message("id4", "zid4", metadata(5, "WCARD_STATUS")));
+		serverConversations.add(message("id5", "zid5", metadata(6, "WCARD_STATUS")));
+		serverConversations.add(message("id6", "zid5", metadata(6, "toto")));
 		conversations.add(new ArrayList<>());
 		conversations.add(serverConversations);
 		return conversations;
@@ -208,9 +209,10 @@ public class EventDetectorTest {
 		return member;
 	}
 
-	private Metadata metadata(int paidDelta) {
+	private Metadata metadata(int paidDelta, String eventId) {
 		Metadata metadata = new Metadata();
 		metadata.setCard(card(paidDelta));
+		metadata.setEventID(eventId);
 		return metadata;
 	}
 
