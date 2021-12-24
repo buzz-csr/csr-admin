@@ -20,7 +20,7 @@ import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EventUpdaterTest {
+public class WildcardUpdaterTest {
 
 	@Mock
 	private TokenDao dao;
@@ -32,7 +32,7 @@ public class EventUpdaterTest {
 	private AuthorizationFactory authorizationFactory;
 
 	@InjectMocks
-	private EventUpdater eventUpdater = new EventUpdater("crew");
+	private WildcardUpdater eventUpdater = new WildcardUpdater("crew");
 
 	@Test
 	public void testUpdate() throws SQLException {

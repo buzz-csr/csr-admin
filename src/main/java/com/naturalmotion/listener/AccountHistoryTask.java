@@ -21,7 +21,7 @@ import com.naturalmotion.webservice.service.history.HistoryUpdater;
 
 public class AccountHistoryTask extends Thread implements CsrTask {
 
-	private static final int TIMEOUT = 30 * 60 * 1000; // 30 min
+	private static final int TIMEOUT = 60 * 60 * 1000; // 1h
 
 	private final Logger log = Logger.getLogger(AccountHistoryTask.class);
 

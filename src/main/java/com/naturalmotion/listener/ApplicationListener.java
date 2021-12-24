@@ -17,10 +17,12 @@ public class ApplicationListener implements ServletContextListener {
 
 	private final Logger log = Logger.getLogger(ApplicationListener.class);
 
-	private EventTask eventTask;
-	private Server server;
+	private WildcardTask wildcardTask;
+	private TokenTask tokenTask;
 	private AccountHistoryTask accountHistoryTask;
 	private CrewHistoryTask crewHistoryTask;
+
+	private Server server;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -31,8 +33,11 @@ public class ApplicationListener implements ServletContextListener {
 			new DatabaseInitializer().init();
 			log.info("Database has been initialized !");
 
-			eventTask = new EventTask();
-			eventTask.start();
+			wildcardTask = new WildcardTask();
+			wildcardTask.start();
+
+			tokenTask = new TokenTask();
+			tokenTask.start();
 
 			accountHistoryTask = new AccountHistoryTask("rouge");
 			accountHistoryTask.start();
@@ -84,7 +89,8 @@ public class ApplicationListener implements ServletContextListener {
 	private void stopAll() {
 		stopTask(accountHistoryTask);
 		stopTask(crewHistoryTask);
-		stopTask(eventTask);
+		stopTask(wildcardTask);
+		stopTask(tokenTask);
 
 		if (server != null) {
 			server.stop();

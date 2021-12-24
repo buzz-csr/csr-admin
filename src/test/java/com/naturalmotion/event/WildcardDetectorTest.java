@@ -36,7 +36,7 @@ import com.naturalmotion.webservice.service.json.tchat.Message;
 import com.naturalmotion.webservice.service.json.tchat.Metadata;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EventDetectorTest {
+public class WildcardDetectorTest {
 
 	private static final String COMPLETE = "complete";
 
@@ -62,7 +62,7 @@ public class EventDetectorTest {
 	private MessageService messageService;
 
 	@InjectMocks
-	private EventDetector eventDetector = new EventDetector("rouge");
+	private WildcardDetector eventDetector = new WildcardDetector("rouge");
 
 	@Captor
 	private ArgumentCaptor<TextMessage> textMessage;

@@ -22,7 +22,7 @@ import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 
 public class CrewHistoryTask extends Thread implements CsrTask {
 
-	private static final int TIMEOUT = 5 * 60 * 1000; // 5 min
+	private static final int TIMEOUT = 60 * 60 * 1000; // 1h
 
 	private final Logger log = Logger.getLogger(CrewHistoryTask.class);
 

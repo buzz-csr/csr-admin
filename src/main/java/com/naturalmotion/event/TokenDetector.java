@@ -1,6 +1,5 @@
 package com.naturalmotion.event;
 
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,29 +11,24 @@ import com.line.api.MessageService;
 import com.line.api.MessageServiceImpl;
 import com.linecorp.bot.model.message.TextMessage;
 import com.naturalmotion.database.TOKEN_RARITY;
-import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.dao.UserTokenDao;
-import com.naturalmotion.database.token.Token;
 import com.naturalmotion.database.usertoken.UserToken;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.api.Member;
 import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
-import com.naturalmotion.webservice.service.json.Card;
 import com.naturalmotion.webservice.service.json.tchat.Message;
 
-public class EventDetector {
+public class TokenDetector {
 
-	private Logger log = Logger.getLogger(EventDetector.class);
+	private Logger log = Logger.getLogger(TokenDetector.class);
 
 	private static final String LINE_USER = "Caadec4214a9c8fc4af36d20c14abef78";
 
 	private final String crew;
 
 	private CrewResources crewResources = new CrewResources();
-
-	private TokenDao dao = new TokenDao();
 
 	private UserTokenDao userTokenDao = new UserTokenDao();
 
@@ -46,15 +40,13 @@ public class EventDetector {
 
 	private Configuration configuration = new Configuration();
 
-	public EventDetector(String crew) {
+	public TokenDetector(String crew) {
 		this.crew = crew;
 	}
 
 	public void detect() {
-		Authorization authorization = authorizationFactory.get(crew);
-		detectWilcards(authorization);
-
 		if (isTokenDetectionEnable()) {
+			Authorization authorization = authorizationFactory.get(crew);
 			detectUserToken(authorization);
 		}
 	}
@@ -137,59 +129,4 @@ public class EventDetector {
 	private boolean isUserDonationToSend(UserToken dbMessage) {
 		return dbMessage == null;
 	}
-
-	private void detectWilcards(Authorization authorization) {
-		try {
-			List<Card> wildcards = crewResources.getWildcards(authorization);
-			Token read = dao.read(crew);
-
-			if (read != null) {
-				detectWilcardChanges(read.getGold(), wildcards, TOKEN_RARITY.GOLD);
-				detectWilcardChanges(read.getSilver(), wildcards, TOKEN_RARITY.SILVER);
-				detectWilcardChanges(read.getBronze(), wildcards, TOKEN_RARITY.BRONZE);
-			}
-		} catch (Exception e) {
-			log.error("Error detecting wilcard changes", e);
-		}
-	}
-
-	private void detectWilcardChanges(com.naturalmotion.database.token.Card dbCard, List<Card> wildcards,
-	        TOKEN_RARITY rarity) {
-		Card actualCard = filterCard(rarity, wildcards);
-		if (dbCard != null && isChanged(rarity, dbCard, actualCard)) {
-			if (WILCARD_STATUS.COMPLETE.getNmValue().equals(actualCard.getStatus())) {
-				TextMessage textMessage = null;
-				switch (rarity) {
-				case GOLD:
-					textMessage = messageFactory.createGoldFull();
-					break;
-				case SILVER:
-					textMessage = messageFactory.createSilverFull();
-					break;
-				case BRONZE:
-					textMessage = messageFactory.createBronzeFull();
-					break;
-				default:
-					break;
-				}
-				messageService.pushMessage(textMessage, LINE_USER);
-			}
-			if (WILCARD_STATUS.ACTIVE.getNmValue().equals(actualCard.getStatus())) {
-				try {
-					messageService.pushImage(messageFactory.createImage(actualCard, crew), LINE_USER);
-				} catch (URISyntaxException e) {
-					log.error("Impossible d'envoyer l'image");
-				}
-			}
-		}
-	}
-
-	private boolean isChanged(TOKEN_RARITY rarity, com.naturalmotion.database.token.Card dbCard, Card actualCard) {
-		return actualCard != null && !actualCard.getStatus().equals(dbCard.getStatus());
-	}
-
-	private Card filterCard(TOKEN_RARITY rarity, List<Card> wildcards) {
-		return wildcards.stream().filter(x -> x.getRarity().equals(rarity.getNmValue())).findFirst().orElse(null);
-	}
-
 }

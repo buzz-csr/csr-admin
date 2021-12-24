@@ -12,9 +12,9 @@ import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
 
-public class EventUpdater {
+public class WildcardUpdater {
 
-	private final Logger log = Logger.getLogger(EventUpdater.class);
+	private final Logger log = Logger.getLogger(WildcardUpdater.class);
 
 	private final String crew;
 
@@ -26,7 +26,7 @@ public class EventUpdater {
 
 	private Converter converter = new Converter();
 
-	public EventUpdater(String crew) {
+	public WildcardUpdater(String crew) {
 		this.crew = crew;
 	}
 
