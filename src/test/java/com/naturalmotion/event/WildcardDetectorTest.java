@@ -29,11 +29,8 @@ import com.naturalmotion.database.dao.UserTokenDao;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.database.usertoken.UserToken;
 import com.naturalmotion.webservice.api.CrewResources;
-import com.naturalmotion.webservice.api.Member;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
-import com.naturalmotion.webservice.service.json.tchat.Message;
-import com.naturalmotion.webservice.service.json.tchat.Metadata;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WildcardDetectorTest {
@@ -62,7 +59,7 @@ public class WildcardDetectorTest {
 	private MessageService messageService;
 
 	@InjectMocks
-	private WildcardDetector eventDetector = new WildcardDetector("rouge");
+	private WildcardDetector wildcardDetector = new WildcardDetector("rouge");
 
 	@Captor
 	private ArgumentCaptor<TextMessage> textMessage;
@@ -120,14 +117,14 @@ public class WildcardDetectorTest {
 	@Test
 	public void testDetectNoNmData() throws Exception {
 		doReturn(null).when(crewResources).getWildcards(any());
-		eventDetector.detect();
+		wildcardDetector.detect();
 		verifyZeroInteractions(messageService);
 	}
 
 	@Test
 	public void testDetectNoChanges() throws Exception {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
-		eventDetector.detect();
+		wildcardDetector.detect();
 		verifyZeroInteractions(messageService);
 	}
 
@@ -135,7 +132,7 @@ public class WildcardDetectorTest {
 	public void testDetectGoldChanges() throws Exception {
 		doReturn(realWilcards(COMPLETE, SILVER_STATUS, BRONZE_STATUS)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
-		eventDetector.detect();
+		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
@@ -145,7 +142,7 @@ public class WildcardDetectorTest {
 	public void testDetectSilverChanges() throws Exception {
 		doReturn(realWilcards(GOLD_STATUS, COMPLETE, BRONZE_STATUS)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
-		eventDetector.detect();
+		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
@@ -156,7 +153,7 @@ public class WildcardDetectorTest {
 		doReturn(realWilcards(GOLD_STATUS, SILVER_STATUS, COMPLETE)).when(crewResources).getWildcards(any());
 
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
-		eventDetector.detect();
+		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
 		verifyZeroInteractions(messageService);
@@ -166,68 +163,9 @@ public class WildcardDetectorTest {
 	public void testDetectAllChanges() throws Exception {
 		doReturn(realWilcards(COMPLETE, COMPLETE, COMPLETE)).when(crewResources).getWildcards(any());
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
-		eventDetector.detect();
+		wildcardDetector.detect();
 		verify(messageService, times(3)).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getAllValues()).hasSize(3);
 		verifyZeroInteractions(messageService);
-	}
-
-	@Test
-	public void testDetectTokenDonation() {
-		doReturn(conversations()).when(crewResources).getConversations(any(), anyString());
-		doReturn(members()).when(crewResources).getMembers(any());
-		eventDetector.detect();
-		verify(messageService, times(1)).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText())
-		        .isEqualTo("zid2 a posé 10 sur le 150%\nname4 a posé 5 sur le 150%");
-	}
-
-	private List<Member> members() {
-		List<Member> members = new ArrayList<>();
-		members.add(member("zid4", "name4"));
-		return members;
-	}
-
-	private List<List<Message>> conversations() {
-		List<List<Message>> conversations = new ArrayList<>();
-		List<Message> serverConversations = new ArrayList<>();
-		serverConversations.add(message("id1", "zid1", null));
-		serverConversations.add(message("id2", "zid2", metadata(10, "WCARD_STATUS")));
-		serverConversations.add(message("id3", "zid3", metadata(0, "WCARD_STATUS")));
-		serverConversations.add(message("id4", "zid4", metadata(5, "WCARD_STATUS")));
-		serverConversations.add(message("id5", "zid5", metadata(6, "WCARD_STATUS")));
-		serverConversations.add(message("id6", "zid5", metadata(6, "toto")));
-		conversations.add(new ArrayList<>());
-		conversations.add(serverConversations);
-		return conversations;
-	}
-
-	private Member member(String id, String name) {
-		Member member = new Member();
-		member.setId(id);
-		member.setName(name);
-		return member;
-	}
-
-	private Metadata metadata(int paidDelta, String eventId) {
-		Metadata metadata = new Metadata();
-		metadata.setCard(card(paidDelta));
-		metadata.setEventID(eventId);
-		return metadata;
-	}
-
-	private com.naturalmotion.webservice.service.json.tchat.Card card(int paidDelta) {
-		com.naturalmotion.webservice.service.json.tchat.Card card = new com.naturalmotion.webservice.service.json.tchat.Card();
-		card.setPaidDelta(paidDelta);
-		card.setRarity(TOKEN_RARITY.GOLD.getNmValue());
-		return card;
-	}
-
-	private Message message(String id, String playerId, Metadata meta) {
-		Message message = new Message();
-		message.setZid(playerId);
-		message.setId(id);
-		message.setMeta(meta);
-		return message;
 	}
 }
