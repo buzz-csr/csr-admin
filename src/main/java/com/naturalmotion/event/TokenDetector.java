@@ -1,6 +1,7 @@
 package com.naturalmotion.event;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +82,8 @@ public class TokenDetector {
 
 	private TextMessage detectTokenChange(Message message, List<Member> members) throws SQLException {
 		TextMessage textMessage = null;
-		UserToken dbMessage = userTokenDao.readUserToken(message.getId());
+		UserToken dbMessage = userTokenDao.readUserToken(message.getZid(),
+		        new Timestamp(message.getCreationTime().getTime()));
 		if (isUserDonationToSend(dbMessage)) {
 			userTokenDao.insertUserToken(createToken(message));
 			com.naturalmotion.webservice.service.json.tchat.Card card = message.getMeta().getCard();
@@ -115,6 +117,7 @@ public class TokenDetector {
 		UserToken token = new UserToken();
 		token.setId(message.getId());
 		token.setUser(message.getZid());
+		token.setTokenDate(new Timestamp(message.getCreationTime().getTime()));
 		com.naturalmotion.webservice.service.json.tchat.Card card = message.getMeta().getCard();
 		token.setRarity(card.getRarity());
 		token.setPaid(card.getPaidDelta());

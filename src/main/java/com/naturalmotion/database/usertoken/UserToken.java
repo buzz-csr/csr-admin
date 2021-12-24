@@ -1,10 +1,13 @@
 package com.naturalmotion.database.usertoken;
 
+import java.sql.Timestamp;
+
 public class UserToken {
 
 	private String id;
 	private String user;
 	private String rarity;
+	private Timestamp tokenDate;
 	private int paid;
 
 	public void setId(String id) {
@@ -37,6 +40,14 @@ public class UserToken {
 
 	public int getPaid() {
 		return paid;
+	}
+
+	public Timestamp getTokenDate() {
+		return tokenDate;
+	}
+
+	public void setTokenDate(Timestamp tokenDate) {
+		this.tokenDate = tokenDate;
 	}
 
 }

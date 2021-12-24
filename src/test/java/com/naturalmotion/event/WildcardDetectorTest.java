@@ -27,7 +27,6 @@ import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.dao.UserTokenDao;
 import com.naturalmotion.database.token.Token;
-import com.naturalmotion.database.usertoken.UserToken;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
@@ -67,14 +66,6 @@ public class WildcardDetectorTest {
 	@Before
 	public void setup() throws SQLException {
 		doReturn(realWilcards()).when(crewResources).getWildcards(any());
-		doReturn(userToken("id5", "zid5")).when(userDao).readUserToken("id5");
-	}
-
-	private UserToken userToken(String id, String playerId) {
-		UserToken userToken = new UserToken();
-		userToken.setId(id);
-		userToken.setUser(playerId);
-		return userToken;
 	}
 
 	private Token dbWildcards(String goldStatus, String silverStatus, String bronzeStatus) {

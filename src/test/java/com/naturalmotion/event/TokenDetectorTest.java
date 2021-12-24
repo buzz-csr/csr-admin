@@ -7,7 +7,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -35,6 +37,8 @@ import com.naturalmotion.webservice.service.json.tchat.Metadata;
 @RunWith(MockitoJUnitRunner.class)
 public class TokenDetectorTest {
 
+	private static final Timestamp TOKEN_DATE = new Timestamp(System.currentTimeMillis());
+
 	@Mock
 	private CrewResources crewResources;
 
@@ -58,13 +62,14 @@ public class TokenDetectorTest {
 
 	@Before
 	public void setup() throws SQLException {
-		doReturn(userToken("id5", "zid5")).when(userDao).readUserToken("id5");
+		doReturn(userToken("id5", "zid5")).when(userDao).readUserToken(org.mockito.Matchers.eq("zid5"), any());
 	}
 
 	private UserToken userToken(String id, String playerId) {
 		UserToken userToken = new UserToken();
 		userToken.setId(id);
 		userToken.setUser(playerId);
+		userToken.setTokenDate(TOKEN_DATE);
 		return userToken;
 	}
 
@@ -87,12 +92,12 @@ public class TokenDetectorTest {
 	private List<List<Message>> conversations() {
 		List<List<Message>> conversations = new ArrayList<>();
 		List<Message> serverConversations = new ArrayList<>();
-		serverConversations.add(message("id1", "zid1", null));
-		serverConversations.add(message("id2", "zid2", metadata(10, "WCARD_STATUS")));
-		serverConversations.add(message("id3", "zid3", metadata(0, "WCARD_STATUS")));
-		serverConversations.add(message("id4", "zid4", metadata(5, "WCARD_STATUS")));
-		serverConversations.add(message("id5", "zid5", metadata(6, "WCARD_STATUS")));
-		serverConversations.add(message("id6", "zid5", metadata(6, "toto")));
+		serverConversations.add(message("id1", "zid1", null, new Date()));
+		serverConversations.add(message("id2", "zid2", metadata(10, "WCARD_STATUS"), new Date()));
+		serverConversations.add(message("id3", "zid3", metadata(0, "WCARD_STATUS"), new Date()));
+		serverConversations.add(message("id4", "zid4", metadata(5, "WCARD_STATUS"), new Date()));
+		serverConversations.add(message("id5", "zid5", metadata(6, "WCARD_STATUS"), TOKEN_DATE));
+		serverConversations.add(message("id6", "zid5", metadata(6, "toto"), new Date()));
 		conversations.add(new ArrayList<>());
 		conversations.add(serverConversations);
 		return conversations;
@@ -119,11 +124,12 @@ public class TokenDetectorTest {
 		return card;
 	}
 
-	private Message message(String id, String playerId, Metadata meta) {
+	private Message message(String id, String playerId, Metadata meta, Date date) {
 		Message message = new Message();
 		message.setZid(playerId);
 		message.setId(id);
 		message.setMeta(meta);
+		message.setCreationTime(date);
 		return message;
 	}
 }
