@@ -57,7 +57,7 @@ public class TokenDetector {
 
 	public void detect() {
 		if (isTokenDetectionEnable()) {
-			Authorization authorization = authorizationFactory.get(crew);
+			Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
 			detectUserToken(authorization);
 		}
 	}

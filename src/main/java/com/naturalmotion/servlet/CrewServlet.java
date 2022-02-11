@@ -58,12 +58,14 @@ public class CrewServlet extends HttpServlet {
 
 		String page = req.getParameter("page");
 		String crew = req.getParameter("crew");
+		String crewPlayerId = configuration.getString(crew + ".player-id");
+
 		if ("crews".equals(page)) {
-			getCrewLeaderboard(resp, crew);
+			getCrewLeaderboard(resp, crewPlayerId);
 		} else if ("graph".equals(page)) {
-			getCrewGraph(resp, crew);
+			getCrewGraph(resp, crewPlayerId);
 		} else {
-			getMembersList(resp, crew);
+			getMembersList(resp, crewPlayerId);
 		}
 	}
 

@@ -46,7 +46,7 @@ public class WildcardDetector {
 	}
 
 	public void detect() {
-		Authorization authorization = authorizationFactory.get(crew);
+		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
 		detectWilcards(authorization);
 	}
 

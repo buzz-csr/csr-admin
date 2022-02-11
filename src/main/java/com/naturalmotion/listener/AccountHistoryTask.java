@@ -61,7 +61,8 @@ public class AccountHistoryTask extends Thread implements CsrTask {
 		list.stream().forEach(team -> {
 			try {
 				Date date = new Date();
-				Authorization authorization = new AuthorizationFactory().get(team);
+				String crewPlayerId = configuration.getString(team + ".player-id");
+				Authorization authorization = new AuthorizationFactory().get(crewPlayerId);
 				List<Member> members = crewResources.getMembers(authorization);
 				members.forEach(m -> updateHistory(m, backup, date));
 			} catch (Exception e) {

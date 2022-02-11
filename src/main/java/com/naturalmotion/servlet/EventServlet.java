@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.api.Profile;
+import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.event.Player;
@@ -29,12 +30,16 @@ public class EventServlet extends HttpServlet {
 
 	private AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 
+	private Configuration configuration = new Configuration();
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String action = req.getParameter("action");
 		String crew = req.getParameter("crew");
-		Authorization authorization = authorizationFactory.get(crew);
+		String crewPlayerId = configuration.getString(crew + ".player-id");
+
+		Authorization authorization = authorizationFactory.get(crewPlayerId);
 
 		if ("list".equals(action)) {
 			getEventsList(resp, authorization);

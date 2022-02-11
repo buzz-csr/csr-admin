@@ -55,7 +55,8 @@ public class CrewHistoryTask extends Thread implements CsrTask {
 	private void doTask(File backup, Configuration configuration) {
 		List<String> list = configuration.getList("crew.list");
 		list.stream().forEach(team -> {
-			Authorization authorization = new AuthorizationFactory().get(team);
+			String crewPlayerId = configuration.getString(team + ".player-id");
+			Authorization authorization = new AuthorizationFactory().get(crewPlayerId);
 			try {
 				Date date = new Date();
 				Crew crew = crewResources.getCrew(authorization);

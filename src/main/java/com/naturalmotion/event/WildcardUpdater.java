@@ -8,6 +8,7 @@ import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Converter;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.webservice.api.CrewResources;
+import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
@@ -24,6 +25,8 @@ public class WildcardUpdater {
 
 	private AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 
+	private Configuration configuration = new Configuration();
+
 	private Converter converter = new Converter();
 
 	public WildcardUpdater(String crew) {
@@ -31,7 +34,7 @@ public class WildcardUpdater {
 	}
 
 	public void update() {
-		Authorization authorization = authorizationFactory.get(crew);
+		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
 		try {
 			List<Card> wildcards = crewResources.getWildcards(authorization);
 			Token convert = converter.convert(wildcards, crew);
