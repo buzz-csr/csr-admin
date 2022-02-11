@@ -9,8 +9,10 @@ import static org.mockito.Mockito.verify;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -79,8 +81,8 @@ public class TokenDetectorTest {
 		doReturn(members()).when(crewResources).getMembers(any());
 		wildcardDetector.detect();
 		verify(messageService, times(1)).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText())
-		        .isEqualTo("zid2 a posé 10 sur le 150%\nname4 a posé 5 sur le 150%");
+		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo(
+		        "lundi 11 à 22:30:00 - zid2 a posé 10 sur le 150%\nlundi 11 à 22:30:00 - name4 a posé 5 sur le 150%");
 	}
 
 	private List<Member> members() {
@@ -92,15 +94,27 @@ public class TokenDetectorTest {
 	private List<List<Message>> conversations() {
 		List<List<Message>> conversations = new ArrayList<>();
 		List<Message> serverConversations = new ArrayList<>();
-		serverConversations.add(message("id1", "zid1", null, new Date()));
-		serverConversations.add(message("id2", "zid2", metadata(10, "WCARD_STATUS"), new Date()));
-		serverConversations.add(message("id3", "zid3", metadata(0, "WCARD_STATUS"), new Date()));
-		serverConversations.add(message("id4", "zid4", metadata(5, "WCARD_STATUS"), new Date()));
-		serverConversations.add(message("id5", "zid5", metadata(6, "WCARD_STATUS"), TOKEN_DATE));
-		serverConversations.add(message("id6", "zid5", metadata(6, "toto"), new Date()));
+		serverConversations.add(message("id1", "zid1", null, createDate()));
+		serverConversations.add(message("id2", "zid2", metadata(10, "WCARD_STATUS"), createDate()));
+		serverConversations.add(message("id3", "zid3", metadata(0, "WCARD_STATUS"), createDate()));
+		serverConversations.add(message("id4", "zid4", metadata(5, "WCARD_STATUS"), createDate()));
+		serverConversations.add(message("id5", "zid5", metadata(6, "WCARD_STATUS"), createDate()));
+		serverConversations.add(message("id6", "zid5", metadata(6, "toto"), createDate()));
 		conversations.add(new ArrayList<>());
 		conversations.add(serverConversations);
 		return conversations;
+	}
+
+	private Date createDate() {
+		Calendar instance = Calendar.getInstance(Locale.FRANCE);
+		instance.set(Calendar.YEAR, 2022);
+		instance.set(Calendar.MONTH, 03);
+		instance.set(Calendar.DAY_OF_MONTH, 11);
+		instance.set(Calendar.HOUR_OF_DAY, 22);
+		instance.set(Calendar.MINUTE, 30);
+		instance.set(Calendar.SECOND, 0);
+		instance.set(Calendar.MILLISECOND, 0);
+		return instance.getTime();
 	}
 
 	private Member member(String id, String name) {

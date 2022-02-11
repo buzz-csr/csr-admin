@@ -2,9 +2,12 @@ package com.naturalmotion.event;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.ImageMessage.ImageMessageBuilder;
@@ -16,6 +19,8 @@ import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.webservice.service.json.Card;
 
 public class MessageFactory {
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("EEEEE dd à HH:mm:ss", Locale.FRANCE);
 
 	public TextMessage createGoldFull() {
 		return create(TOKEN_RARITY.GOLD);
@@ -102,9 +107,11 @@ public class MessageFactory {
 		return imBuilder.build();
 	}
 
-	public TextMessage createUserTokenDonation(String playerName, String name, int paidDelta) {
+	public TextMessage createUserTokenDonation(String playerName, String name, int paidDelta, Date date) {
 		TextMessageBuilder tmBuilder = TextMessage.builder();
 		StringBuilder message = new StringBuilder();
+		message.append(sdf.format(date));
+		message.append(" - ");
 		message.append(playerName);
 		message.append(" a posé ");
 		message.append(paidDelta);

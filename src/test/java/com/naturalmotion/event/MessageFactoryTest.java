@@ -2,7 +2,10 @@ package com.naturalmotion.event;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -63,8 +66,20 @@ public class MessageFactoryTest {
 
 	@Test
 	public void testCreateUserTokenDonation() {
-		Assertions.assertThat(factory.createUserTokenDonation("playerName", "20", 10).getText())
-		        .isEqualTo("playerName a posé 10 sur le 20%");
+		Assertions.assertThat(factory.createUserTokenDonation("playerName", "20", 10, createDate()).getText())
+		        .isEqualTo("lundi 11 à 22:30:00 - playerName a posé 10 sur le 20%");
+	}
+
+	private Date createDate() {
+		Calendar instance = Calendar.getInstance(Locale.FRANCE);
+		instance.set(Calendar.YEAR, 2022);
+		instance.set(Calendar.MONTH, 03);
+		instance.set(Calendar.DAY_OF_MONTH, 11);
+		instance.set(Calendar.HOUR_OF_DAY, 22);
+		instance.set(Calendar.MINUTE, 30);
+		instance.set(Calendar.SECOND, 0);
+		instance.set(Calendar.MILLISECOND, 0);
+		return instance.getTime();
 	}
 
 	@Test

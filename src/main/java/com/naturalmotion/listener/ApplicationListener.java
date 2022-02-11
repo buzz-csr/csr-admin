@@ -67,7 +67,7 @@ public class ApplicationListener implements ServletContextListener {
 		closeJdbcDriver();
 
 		try {
-			Thread.sleep(15000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			log.error("Error waiting shutdown");
 		}

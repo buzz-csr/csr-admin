@@ -25,8 +25,6 @@ public class TokenDetector {
 
 	private Logger log = Logger.getLogger(TokenDetector.class);
 
-	private static final String LINE_USER = "Caadec4214a9c8fc4af36d20c14abef78";
-
 	private final String crew;
 
 	private CrewResources crewResources = new CrewResources();
@@ -41,8 +39,11 @@ public class TokenDetector {
 
 	private Configuration configuration = new Configuration();
 
+	private String lineReplyId;
+
 	public TokenDetector(String crew) {
 		this.crew = crew;
+		lineReplyId = configuration.getString("line.user.reply");
 	}
 
 	public void detect() {
@@ -73,7 +74,7 @@ public class TokenDetector {
 			}
 
 			if (!tMessages.isEmpty()) {
-				messageService.pushMessage(messageFactory.join(tMessages), LINE_USER);
+				messageService.pushMessage(messageFactory.join(tMessages), lineReplyId);
 			}
 		} catch (Exception e) {
 			log.error("Error detecting user token donation", e);
@@ -90,7 +91,7 @@ public class TokenDetector {
 			Member actualMember = members.stream().filter(x -> message.getZid().equals(x.getId())).findFirst()
 			        .orElse(null);
 			textMessage = messageFactory.createUserTokenDonation(getUserName(message, actualMember),
-			        TOKEN_RARITY.from(card.getRarity()).getName(), card.getPaidDelta());
+			        TOKEN_RARITY.from(card.getRarity()).getName(), card.getPaidDelta(), message.getCreationTime());
 		}
 		return textMessage;
 	}

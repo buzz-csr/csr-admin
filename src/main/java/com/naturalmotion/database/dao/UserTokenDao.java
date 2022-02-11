@@ -55,9 +55,8 @@ public class UserTokenDao {
 				statement.setInt(5, token.getPaid());
 				result = statement.executeUpdate();
 
-				log.info(new SqlLogBuilder().build(INSERT_USER_TOKEN,
-				        Arrays.asList(token.getId(), token.getUser(), token.getRarity(), token.getPaid())) + ";"
-				        + result);
+				log.info(new SqlLogBuilder().build(INSERT_USER_TOKEN, Arrays.asList(token.getId(), token.getTokenDate(),
+				        token.getUser(), token.getRarity(), token.getPaid())) + ";" + result);
 
 				connection.commit();
 			}

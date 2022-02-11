@@ -12,6 +12,7 @@ import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.webservice.api.CrewResources;
+import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
@@ -19,8 +20,6 @@ import com.naturalmotion.webservice.service.json.Card;
 public class WildcardDetector {
 
 	private Logger log = Logger.getLogger(WildcardDetector.class);
-
-	private static final String LINE_USER = "Caadec4214a9c8fc4af36d20c14abef78";
 
 	private final String crew;
 
@@ -34,8 +33,13 @@ public class WildcardDetector {
 
 	private MessageFactory messageFactory = new MessageFactory();
 
+	private Configuration configuration = new Configuration();
+
+	private String lineReplyId;
+
 	public WildcardDetector(String crew) {
 		this.crew = crew;
+		lineReplyId = configuration.getString("line.user.reply");
 	}
 
 	public void detect() {
@@ -77,11 +81,11 @@ public class WildcardDetector {
 				default:
 					break;
 				}
-				messageService.pushMessage(textMessage, LINE_USER);
+				messageService.pushMessage(textMessage, lineReplyId);
 			}
 			if (WILCARD_STATUS.ACTIVE.getNmValue().equals(actualCard.getStatus())) {
 				try {
-					messageService.pushImage(messageFactory.createImage(actualCard, crew), LINE_USER);
+					messageService.pushImage(messageFactory.createImage(actualCard, crew), lineReplyId);
 				} catch (URISyntaxException e) {
 					log.error("Impossible d'envoyer l'image");
 				}
