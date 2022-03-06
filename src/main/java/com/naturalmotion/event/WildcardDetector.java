@@ -39,7 +39,7 @@ public class WildcardDetector {
 
 	public WildcardDetector(String crew) {
 		this.crew = crew;
-		lineReplyId = configuration.getString("line.user.reply");
+		lineReplyId = configuration.getString("line.user.reply." + crew);
 	}
 
 	public void detect() {

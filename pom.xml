@@ -144,7 +144,7 @@
 			<properties>
 				<working.directory>/home/jerome/Documents/backup</working.directory>
 				<h2.file>jdbc:h2:file:/home/jerome/Documents/backup/database;DB_CLOSE_DELAY=-1;FILE_LOCK=NO</h2.file>
-				<line.user.id>Caadec4214a9c8fc4af36d20c14abef78</line.user.id>
+				<line.user.id.red>Caadec4214a9c8fc4af36d20c14abef78</line.user.id.red>
 			</properties>
 		</profile>
 		<profile>
@@ -152,14 +152,14 @@
 			<properties>
 				<working.directory>/home/jerome/Documents/backupTest</working.directory>
 				<h2.file>jdbc:h2:file:/home/jerome/Documents/backupTest/database;DB_CLOSE_DELAY=-1;FILE_LOCK=NO</h2.file>
-				<line.user.id>U34b21f21232f2c9134cbb741eedfa6d2</line.user.id>
+				<line.user.id.red>U34b21f21232f2c9134cbb741eedfa6d2</line.user.id.red>
 			</properties>
 		</profile>
 		<profile>
 			<id>windows</id>
 			<properties>
 				<working.directory>C:/Users/stephanie/Documents/Projets/backup</working.directory>
-				<line.user.id>Caadec4214a9c8fc4af36d20c14abef78</line.user.id>
+				<line.user.id.red>U34b21f21232f2c9134cbb741eedfa6d2</line.user.id.red>
 			</properties>
 		</profile>
 		<profile>
@@ -167,7 +167,7 @@
 			<properties>
 				<working.directory>C:/Dev/Git/perso/backup</working.directory>
 				<h2.file>jdbc:h2:file:C:/Dev/Git/perso/csr/database;DB_CLOSE_DELAY=-1;FILE_LOCK=NO</h2.file>
-				<line.user.id>Caadec4214a9c8fc4af36d20c14abef78</line.user.id>
+				<line.user.id.red>U34b21f21232f2c9134cbb741eedfa6d2</line.user.id.red>
 			</properties>
 		</profile>
 	</profiles>

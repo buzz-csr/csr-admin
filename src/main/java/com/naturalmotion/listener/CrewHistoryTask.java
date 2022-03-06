@@ -30,15 +30,9 @@ public class CrewHistoryTask extends Thread implements CsrTask {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	private String team;
-
 	private STATE state = STATE.RUNNING;
 
 	private long chrono = System.currentTimeMillis();
-
-	public CrewHistoryTask(String team) {
-		this.team = team;
-	}
 
 	@Override
 	public void run() {
@@ -49,27 +43,29 @@ public class CrewHistoryTask extends Thread implements CsrTask {
 		if (!backup.exists()) {
 			backup.mkdirs();
 		}
-
-		AuthorizationFactory authorizationFactory = new AuthorizationFactory();
-		Authorization authorization = authorizationFactory.get(team);
 		while (STATE.RUNNING.equals(state)) {
 			if (System.currentTimeMillis() - chrono > TIMEOUT) {
 				chrono = System.currentTimeMillis();
-				doTask(backup, authorization);
+				doTask(backup, configuration);
 			}
 		}
 		state = STATE.STOP;
 	}
 
-	private void doTask(File backup, Authorization authorization) {
-		try {
-			Date date = new Date();
-			Crew crew = crewResources.getCrew(authorization);
+	private void doTask(File backup, Configuration configuration) {
+		List<String> list = configuration.getList("crew.list");
+		list.stream().forEach(team -> {
+			Authorization authorization = new AuthorizationFactory().get(team);
+			try {
+				Date date = new Date();
+				Crew crew = crewResources.getCrew(authorization);
 
-			updateCrewHistory(backup, date, crew);
-		} catch (Exception e) {
-			log.error("Error into AccountHistoryTask for team " + team, e);
-		}
+				updateCrewHistory(backup, date, crew);
+			} catch (Exception e) {
+				log.error("Error into AccountHistoryTask for team " + team, e);
+			}
+
+		});
 	}
 
 	private void updateCrewHistory(File backup, Date date, Crew crew) {

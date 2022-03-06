@@ -39,10 +39,10 @@ public class ApplicationListener implements ServletContextListener {
 			tokenTask = new TokenTask();
 			tokenTask.start();
 
-			accountHistoryTask = new AccountHistoryTask("rouge");
+			accountHistoryTask = new AccountHistoryTask();
 			accountHistoryTask.start();
 
-			crewHistoryTask = new CrewHistoryTask("rouge");
+			crewHistoryTask = new CrewHistoryTask();
 			crewHistoryTask.start();
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {

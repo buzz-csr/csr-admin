@@ -27,7 +27,7 @@ public class WildcardTask extends Thread implements CsrTask {
 	private long chrono = System.currentTimeMillis();
 
 	public WildcardTask() {
-		List<String> list = configuration.getList("token.task.crew");
+		List<String> list = configuration.getList("crew.list");
 		list.stream().forEach(x -> extracted(x));
 	}
 

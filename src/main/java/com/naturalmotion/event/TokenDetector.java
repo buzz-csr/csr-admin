@@ -43,7 +43,7 @@ public class TokenDetector {
 
 	public TokenDetector(String crew) {
 		this.crew = crew;
-		lineReplyId = configuration.getString("line.user.reply");
+		lineReplyId = configuration.getString("line.user.reply." + crew);
 	}
 
 	public void detect() {
@@ -111,7 +111,7 @@ public class TokenDetector {
 	}
 
 	private boolean isTokenDetectionEnable() {
-		return configuration.getList("token.task.crew").contains(crew);
+		return configuration.getList("crew.list").contains(crew);
 	}
 
 	private UserToken createToken(Message message) {

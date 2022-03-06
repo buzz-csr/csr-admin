@@ -11,7 +11,8 @@ import com.naturalmotion.webservice.configuration.Configuration;
 
 public class TokenTask extends Thread implements CsrTask {
 
-	private static final int TIMEOUT = 360 * 60 * 1000; // 6h
+	private static final int TIMEOUT = 30 * 1000; // 6h
+	// private static final int TIMEOUT = 360 * 60 * 1000; // 6h
 
 	private Logger log = Logger.getLogger(TokenTask.class);
 
@@ -24,7 +25,7 @@ public class TokenTask extends Thread implements CsrTask {
 	private long chrono = System.currentTimeMillis();
 
 	public TokenTask() {
-		List<String> list = configuration.getList("token.task.crew");
+		List<String> list = configuration.getList("crew.list");
 		list.stream().forEach(x -> extracted(x));
 	}
 
