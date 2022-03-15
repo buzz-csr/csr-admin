@@ -23,13 +23,13 @@ public class WildcardDetector {
 
 	private final String crew;
 
+	private MessageService messageService;
+
 	private CrewResources crewResources = new CrewResources();
 
 	private TokenDao dao = new TokenDao();
 
 	private AuthorizationFactory authorizationFactory = new AuthorizationFactory();
-
-	private MessageService messageService = new MessageServiceImpl();
 
 	private MessageFactory messageFactory = new MessageFactory();
 
@@ -40,6 +40,7 @@ public class WildcardDetector {
 	public WildcardDetector(String crew) {
 		this.crew = crew;
 		lineReplyId = configuration.getString("line.user.reply." + crew);
+		messageService = new MessageServiceImpl(configuration.getString("line.access_token"));
 	}
 
 	public void detect() {

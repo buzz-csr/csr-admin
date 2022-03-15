@@ -27,13 +27,13 @@ public class TokenDetector {
 
 	private final String crew;
 
+	private MessageService messageService;
+
 	private CrewResources crewResources = new CrewResources();
 
 	private UserTokenDao userTokenDao = new UserTokenDao();
 
 	private AuthorizationFactory authorizationFactory = new AuthorizationFactory();
-
-	private MessageService messageService = new MessageServiceImpl();
 
 	private MessageFactory messageFactory = new MessageFactory();
 
@@ -44,6 +44,7 @@ public class TokenDetector {
 	public TokenDetector(String crew) {
 		this.crew = crew;
 		lineReplyId = configuration.getString("line.user.reply." + crew);
+		messageService = new MessageServiceImpl(configuration.getString("line.access_token"));
 	}
 
 	public void detect() {
