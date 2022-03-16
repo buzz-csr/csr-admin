@@ -83,7 +83,7 @@ public class TokenDetector {
 						detectTokenChange(message, members, data.get(day));
 					}
 				}
-				messageService.pushMessage(messageFactory.createFlexMessage(crew, data), lineReplyId);
+				messageService.pushMessage(messageFactory.createUserTokenFlexMessage(crew, data), lineReplyId);
 			}
 		} catch (Exception e) {
 			log.error("Error detecting user token donation", e);

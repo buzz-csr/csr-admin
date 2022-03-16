@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.line.api.MessageService;
-import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.FlexMessage;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.dao.UserTokenDao;
@@ -61,7 +61,7 @@ public class WildcardDetectorTest {
 	private WildcardDetector wildcardDetector = new WildcardDetector("team1");
 
 	@Captor
-	private ArgumentCaptor<TextMessage> textMessage;
+	private ArgumentCaptor<FlexMessage> textMessage;
 
 	@Before
 	public void setup() throws SQLException {
@@ -125,7 +125,7 @@ public class WildcardDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$$ $$$$$ $");
+		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker GOLD% plein");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -135,7 +135,7 @@ public class WildcardDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
+		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker SILVER% plein");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -146,7 +146,7 @@ public class WildcardDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getText()).isEqualTo("$$$ $$$$$ $");
+		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker BRONZE% plein");
 		verifyZeroInteractions(messageService);
 	}
 
