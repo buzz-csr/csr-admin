@@ -56,7 +56,7 @@ public class TokenDetectorTest {
 	private MessageService messageService;
 
 	@InjectMocks
-	private TokenDetector wildcardDetector = new TokenDetector("rouge");
+	private TokenDetector wildcardDetector = new TokenDetector("team1");
 
 	@Captor
 	private ArgumentCaptor<FlexMessage> message;

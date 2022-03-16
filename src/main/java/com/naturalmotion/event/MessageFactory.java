@@ -155,9 +155,9 @@ public class MessageFactory {
 		return tmBuilder.build();
 	}
 
-	public FlexMessage createFlexMessage(Map<String, List<List<String>>> data) throws URISyntaxException {
+	public FlexMessage createFlexMessage(String crew, Map<String, List<List<String>>> data) throws URISyntaxException {
 		FlexComponent heroComponent = Image.builder().size(ImageSize.FULL_WIDTH).aspectMode(ImageAspectMode.Cover)
-		        .aspectRatio("10:2").url(new URI("https://mod.csr-lesnains.fr/csr-admin/images/line/Alliance1.png"))
+		        .aspectRatio("10:2").url(new URI("https://mod.csr-lesnains.fr/csr-admin/images/line/" + crew + ".png"))
 		        .build();
 		FlexContainer flexContainer = Bubble.builder()
 		        .styles(BubbleStyles.builder()

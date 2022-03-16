@@ -58,7 +58,7 @@ public class WildcardDetectorTest {
 	private MessageService messageService;
 
 	@InjectMocks
-	private WildcardDetector wildcardDetector = new WildcardDetector("rouge");
+	private WildcardDetector wildcardDetector = new WildcardDetector("team1");
 
 	@Captor
 	private ArgumentCaptor<TextMessage> textMessage;

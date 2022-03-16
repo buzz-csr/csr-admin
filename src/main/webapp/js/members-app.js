@@ -4,7 +4,7 @@ var memberModule = angular.module('memberModule', ['ngSanitize']);
 memberModule.controller('memberCtrl', ['$scope', '$http', '$sce', '$location', '$anchorScroll', '$interval', function($scope, $http, $sce, $location, $anchorScroll, $interval) {
     $scope.loading = true;
     $scope.currentTab = "players";
-    $scope.activeCrew = "rouge";
+    $scope.activeCrew = "team1";
     $scope.events = [];
     $scope.scoreEvents = [];
     $scope.conversations;
