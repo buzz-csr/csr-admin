@@ -125,7 +125,7 @@ public class WildcardDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker GOLD% plein");
+		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker 150% plein");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -135,7 +135,7 @@ public class WildcardDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker SILVER% plein");
+		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker 70% plein");
 		verifyZeroInteractions(messageService);
 	}
 
@@ -146,7 +146,7 @@ public class WildcardDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		wildcardDetector.detect();
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
-		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker BRONZE% plein");
+		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker 30% plein");
 		verifyZeroInteractions(messageService);
 	}
 

@@ -44,7 +44,7 @@ public class MessageFactory {
 	}
 
 	private FlexMessage createFullCardFlexMessage(String crew, TOKEN_RARITY rarity) throws URISyntaxException {
-		String text = "joker " + rarity + "% plein";
+		String text = "joker " + rarity.getName() + "% plein";
 		Box card = Box.builder().layout(FlexLayout.HORIZONTAL).content(
 		        Text.builder().text(text).size(FlexFontSize.XXXL).align(FlexAlign.CENTER).color("#ffffff").build())
 		        .build();
