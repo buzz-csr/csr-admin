@@ -11,8 +11,7 @@ import com.naturalmotion.webservice.configuration.Configuration;
 
 public class TokenTask extends Thread implements CsrTask {
 
-	private static final int TIMEOUT = 30 * 1000; // 12h
-	// private static final int TIMEOUT = 12 * 60 * 60 * 1000; // 12h
+	private static final int TIMEOUT = 12 * 60 * 60 * 1000; // 12h
 
 	private Logger log = Logger.getLogger(TokenTask.class);
 
