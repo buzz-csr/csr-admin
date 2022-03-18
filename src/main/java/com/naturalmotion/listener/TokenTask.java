@@ -11,7 +11,8 @@ import com.naturalmotion.webservice.configuration.Configuration;
 
 public class TokenTask extends Thread implements CsrTask {
 
-	private static final int TIMEOUT = 360 * 60 * 1000; // 6h
+	private static final int TIMEOUT = 30 * 1000; // 12h
+	// private static final int TIMEOUT = 12 * 60 * 60 * 1000; // 12h
 
 	private Logger log = Logger.getLogger(TokenTask.class);
 
@@ -37,11 +38,16 @@ public class TokenTask extends Thread implements CsrTask {
 	@Override
 	public void run() {
 		log.info("EventTask started !");
-		while (STATE.RUNNING.equals(state)) {
-			if (System.currentTimeMillis() - chrono > TIMEOUT) {
-				chrono = System.currentTimeMillis();
-				tokenDetector.stream().forEach(x -> x.detect());
+		try {
+			while (STATE.RUNNING.equals(state)) {
+				if (System.currentTimeMillis() - chrono > TIMEOUT) {
+					chrono = System.currentTimeMillis();
+					tokenDetector.stream().forEach(x -> x.detect());
+				}
+				Thread.sleep(10000);
 			}
+		} catch (InterruptedException e) {
+			log.error("Error sleeping", e);
 		}
 		state = STATE.STOP;
 		log.info("EventTask thread has been stopped");

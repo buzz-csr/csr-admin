@@ -41,12 +41,17 @@ public class WildcardTask extends Thread implements CsrTask {
 	@Override
 	public void run() {
 		log.info("EventTask started !");
-		while (STATE.RUNNING.equals(state)) {
-			if (System.currentTimeMillis() - chrono > TIMEOUT) {
-				chrono = System.currentTimeMillis();
-				wildcardDetector.stream().forEach(x -> x.detect());
-				wildcardUpdater.stream().forEach(x -> x.update());
+		try {
+			while (STATE.RUNNING.equals(state)) {
+				if (System.currentTimeMillis() - chrono > TIMEOUT) {
+					chrono = System.currentTimeMillis();
+					wildcardDetector.stream().forEach(x -> x.detect());
+					wildcardUpdater.stream().forEach(x -> x.update());
+				}
+				Thread.sleep(10000);
 			}
+		} catch (InterruptedException e) {
+			log.error("Error sleeping", e);
 		}
 		state = STATE.STOP;
 		log.info("EventTask thread has been stopped");

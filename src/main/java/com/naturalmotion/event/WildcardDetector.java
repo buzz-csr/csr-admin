@@ -11,6 +11,7 @@ import com.linecorp.bot.model.message.Message;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
 import com.naturalmotion.database.token.Token;
+import com.naturalmotion.line.LineConfiguration;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
@@ -39,8 +40,9 @@ public class WildcardDetector {
 
 	public WildcardDetector(String crew) {
 		this.crew = crew;
-		lineReplyId = configuration.getString("line.user.reply." + crew);
-		messageService = new MessageServiceImpl(configuration.getString("line.access_token." + crew));
+		LineConfiguration lineConfiguration = new LineConfiguration(configuration);
+		lineReplyId = lineConfiguration.getString("line.wildcard_status.reply." + crew);
+		messageService = new MessageServiceImpl(lineConfiguration.getString("line.access_token." + crew));
 	}
 
 	public void detect() {

@@ -17,6 +17,7 @@ import com.line.api.MessageServiceImpl;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.UserTokenDao;
 import com.naturalmotion.database.usertoken.UserToken;
+import com.naturalmotion.line.LineConfiguration;
 import com.naturalmotion.webservice.api.CrewResources;
 import com.naturalmotion.webservice.api.Member;
 import com.naturalmotion.webservice.configuration.Configuration;
@@ -49,8 +50,9 @@ public class TokenDetector {
 
 	public TokenDetector(String crew) {
 		this.crew = crew;
-		lineReplyId = configuration.getString("line.user.reply." + crew);
-		messageService = new MessageServiceImpl(configuration.getString("line.access_token." + crew));
+		LineConfiguration lineConfiguration = new LineConfiguration(configuration);
+		lineReplyId = lineConfiguration.getString("line.user_donation.reply." + crew);
+		messageService = new MessageServiceImpl(lineConfiguration.getString("line.access_token.user_donation"));
 	}
 
 	public void detect() {
