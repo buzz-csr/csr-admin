@@ -40,7 +40,7 @@ public class WildcardDetector {
 	public WildcardDetector(String crew) {
 		this.crew = crew;
 		lineReplyId = configuration.getString("line.user.reply." + crew);
-		messageService = new MessageServiceImpl(configuration.getString("line.access_token"));
+		messageService = new MessageServiceImpl(configuration.getString("line.access_token." + crew));
 	}
 
 	public void detect() {

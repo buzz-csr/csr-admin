@@ -145,7 +145,9 @@
 				<working.directory>/home/jerome/Documents/backup</working.directory>
 				<h2.file>jdbc:h2:file:/home/jerome/Documents/backup/database;DB_CLOSE_DELAY=-1;FILE_LOCK=NO</h2.file>
 				<line.user.id.red>Cd9f5896110312d6f80b5387388918ad0</line.user.id.red>
-				<line.access_token.value>eVXK3prAepp2PqZ2VvN//E1xpXGhya8+ofCDsx6KplRb/5OAfHcCeBg+reXMnFk1OvEyWEcFpPaha0zMpfzPKF6CAUWQBlfLC3F4VCEcCYiAhHj+eE2h6XyrSTiFKhlatKGrELxWak58dfL2vmAvHQdB04t89/1O/w1cDnyilFU=</line.access_token.value>
+				<line.access_token.value.team1>eVXK3prAepp2PqZ2VvN//E1xpXGhya8+ofCDsx6KplRb/5OAfHcCeBg+reXMnFk1OvEyWEcFpPaha0zMpfzPKF6CAUWQBlfLC3F4VCEcCYiAhHj+eE2h6XyrSTiFKhlatKGrELxWak58dfL2vmAvHQdB04t89/1O/w1cDnyilFU=</line.access_token.value.team1>
+				<line.access_token.value.team2>jFuHl4EiF5xXLHzMKsiC0ZfeJPfi1VdsX2NGHGYHJvKYLTcAjESj7mtDb4XPSYw/RR4o1lGV0/bIwdbuGeEGMp3EvGolr0JpMdzcDfGHlAc4t436ZMepiCA+jm/yJiojTXmh03Hr5mX3V+ZSJITewwdB04t89/1O/w1cDnyilFU=</line.access_token.value.team2>
+				<line.access_token.value.team3>k3DEb8yGZ+fjoMd9rNrcVRiNpJpWLu478rV26Xe2hxaaRv9MzaTz6CLB8AsGGvyYNnOIAOt+GDMHWiEwo6rGM6x9onZ99wwWoUsQ5jJro+wTA98izvHMnrp0BaO/4YXY6rryjw9PoP5XewLJPbfyKAdB04t89/1O/w1cDnyilFU=</line.access_token.value.team3>
 			</properties>
 		</profile>
 		<profile>
@@ -154,22 +156,9 @@
 				<working.directory>/home/jerome/Documents/backupTest</working.directory>
 				<h2.file>jdbc:h2:file:/home/jerome/Documents/backupTest/database;DB_CLOSE_DELAY=-1;FILE_LOCK=NO</h2.file>
 				<line.user.id.red>U34b21f21232f2c9134cbb741eedfa6d2</line.user.id.red>
-				<line.access_token.value>7kyBLISMOtD9T0SVoUPhCspk732uw40q6pMr5b5/LJ/Fl1bNbefBNBl4gVLzfjdBvQXg8XQhuWOf5w8qNExJj+6CDNC6tIsyoWOuDR3Esluk/MZr/wgA7siv/r/5ZuEeb/Ie2tW/HRdSX/u4W9rZ6QdB04t89/1O/w1cDnyilFU=</line.access_token.value>
-			</properties>
-		</profile>
-		<profile>
-			<id>windows</id>
-			<properties>
-				<working.directory>C:/Users/stephanie/Documents/Projets/backup</working.directory>
-				<line.user.id.red>U34b21f21232f2c9134cbb741eedfa6d2</line.user.id.red>
-			</properties>
-		</profile>
-		<profile>
-			<id>bureau</id>
-			<properties>
-				<working.directory>C:/Dev/Git/perso/backup</working.directory>
-				<h2.file>jdbc:h2:file:C:/Dev/Git/perso/csr/database;DB_CLOSE_DELAY=-1;FILE_LOCK=NO</h2.file>
-				<line.user.id.red>U34b21f21232f2c9134cbb741eedfa6d2</line.user.id.red>
+				<line.access_token.value.team1>7kyBLISMOtD9T0SVoUPhCspk732uw40q6pMr5b5/LJ/Fl1bNbefBNBl4gVLzfjdBvQXg8XQhuWOf5w8qNExJj+6CDNC6tIsyoWOuDR3Esluk/MZr/wgA7siv/r/5ZuEeb/Ie2tW/HRdSX/u4W9rZ6QdB04t89/1O/w1cDnyilFU=</line.access_token.value.team1>
+				<line.access_token.value.team2>7kyBLISMOtD9T0SVoUPhCspk732uw40q6pMr5b5/LJ/Fl1bNbefBNBl4gVLzfjdBvQXg8XQhuWOf5w8qNExJj+6CDNC6tIsyoWOuDR3Esluk/MZr/wgA7siv/r/5ZuEeb/Ie2tW/HRdSX/u4W9rZ6QdB04t89/1O/w1cDnyilFU=</line.access_token.value.team2>
+				<line.access_token.value.team3>7kyBLISMOtD9T0SVoUPhCspk732uw40q6pMr5b5/LJ/Fl1bNbefBNBl4gVLzfjdBvQXg8XQhuWOf5w8qNExJj+6CDNC6tIsyoWOuDR3Esluk/MZr/wgA7siv/r/5ZuEeb/Ie2tW/HRdSX/u4W9rZ6QdB04t89/1O/w1cDnyilFU=</line.access_token.value.team3>
 			</properties>
 		</profile>
 	</profiles>
