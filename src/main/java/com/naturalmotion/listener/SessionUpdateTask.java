@@ -8,7 +8,7 @@ public class SessionUpdateTask extends Thread implements CsrTask {
 
 	private final Logger log = Logger.getLogger(SessionUpdateTask.class);
 
-	private static final int TIMEOUT = 15 * 1000; // 15 sec
+	private static final int TIMEOUT = 30 * 1000; // 15 sec
 
 	private SessionService sessionService = new SessionService();
 

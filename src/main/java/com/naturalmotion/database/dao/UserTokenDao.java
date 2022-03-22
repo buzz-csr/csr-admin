@@ -28,7 +28,7 @@ public class UserTokenDao {
 			statement.setTimestamp(2, tokenDate);
 			try (ResultSet result = statement.executeQuery();) {
 
-				log.info(new SqlLogBuilder().build(SELECT_USER_TOKEN, Arrays.asList(user, tokenDate)));
+				log.debug(new SqlLogBuilder().build(SELECT_USER_TOKEN, Arrays.asList(user, tokenDate)));
 				while (result.next()) {
 					userToken = new UserToken();
 					userToken.setId(result.getString("id"));
@@ -55,8 +55,8 @@ public class UserTokenDao {
 				statement.setInt(5, token.getPaid());
 				result = statement.executeUpdate();
 
-				log.info(new SqlLogBuilder().build(INSERT_USER_TOKEN, Arrays.asList(token.getId(), token.getTokenDate(),
-				        token.getUser(), token.getRarity(), token.getPaid())) + ";" + result);
+				log.debug(new SqlLogBuilder().build(INSERT_USER_TOKEN, Arrays.asList(token.getId(),
+				        token.getTokenDate(), token.getUser(), token.getRarity(), token.getPaid())) + ";" + result);
 
 				connection.commit();
 			}

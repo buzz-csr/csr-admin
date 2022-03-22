@@ -53,7 +53,7 @@ public class TokenDao {
 			statement.setString(5, rarity.getNmValue());
 			int executeUpdate = statement.executeUpdate();
 
-			log.info(new SqlLogBuilder().build(UPDATE_TOKEN,
+			log.debug(new SqlLogBuilder().build(UPDATE_TOKEN,
 			        Arrays.asList(card.getStatus(), card.getPaid(), card.getCost(), crew, rarity.getNmValue())) + ";"
 			        + executeUpdate);
 
@@ -70,7 +70,7 @@ public class TokenDao {
 			statement.setInt(5, card.getCost());
 			int executeUpdate = statement.executeUpdate();
 
-			log.info(new SqlLogBuilder().build(INSERT_TOKEN,
+			log.debug(new SqlLogBuilder().build(INSERT_TOKEN,
 			        Arrays.asList(crew, rarity.getNmValue(), card.getStatus(), card.getPaid(), card.getCost())) + ";"
 			        + executeUpdate);
 
@@ -97,7 +97,7 @@ public class TokenDao {
 			statement.setString(2, rarity.getNmValue());
 			ResultSet result = statement.executeQuery();
 
-			log.info(new SqlLogBuilder().build(SELECT_TOKEN, Arrays.asList(crew, rarity.getNmValue())));
+			log.debug(new SqlLogBuilder().build(SELECT_TOKEN, Arrays.asList(crew, rarity.getNmValue())));
 			while (result.next()) {
 				card = new Card();
 				card.setStatus(result.getString("status"));
