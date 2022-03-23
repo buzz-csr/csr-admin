@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.naturalmotion.webservice.api.CrewResources;
-import com.naturalmotion.webservice.configuration.Configuration;
 import com.naturalmotion.webservice.service.auth.Authorization;
 import com.naturalmotion.webservice.service.auth.AuthorizationFactory;
 import com.naturalmotion.webservice.service.json.Card;
@@ -29,13 +28,11 @@ public class WildcardsServlet extends HttpServlet {
 
 	private AuthorizationFactory authorizationFactory = new AuthorizationFactory();
 
-	private Configuration configuration = new Configuration();
-
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String crew = req.getParameter("crew");
-		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
+		Authorization authorization = authorizationFactory.get(crew);
 		List<Card> wildcards = crewResources.getWildcards(authorization);
 
 		resp.setContentType("application/json; charset=UTF-8");

@@ -78,7 +78,7 @@ public class CrewServlet extends HttpServlet {
 	}
 
 	private void getCrewLeaderboard(HttpServletResponse resp, String crew) {
-		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
+		Authorization authorization = authorizationFactory.get(crew);
 		List<Crew> crews = crewService.getLeaderCrews(authorization, crew);
 		crews.stream().forEach(x -> x.setActive(x.getId().equals(configuration.getString(crew + ".crew-id"))));
 		resp.setContentType("application/json; charset=UTF-8");
@@ -92,7 +92,7 @@ public class CrewServlet extends HttpServlet {
 
 	private void getMembersList(HttpServletResponse resp, String crew) {
 		Date date = new Date();
-		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
+		Authorization authorization = authorizationFactory.get(crew);
 		List<Member> members = crewService.getMembers(authorization);
 		List<CsrMember> csrMember = new ArrayList<>();
 		members.forEach(x -> {
@@ -120,7 +120,7 @@ public class CrewServlet extends HttpServlet {
 		try (PrintWriter writer = resp.getWriter();) {
 			ObjectMapper mapper = new ObjectMapper();
 			writer.write("{ \"list\" : " + mapper.writeValueAsString(csrMember) + ", \"names\" : "
-					+ build.build().toString() + "}");
+			        + build.build().toString() + "}");
 		} catch (Exception e) {
 			log.error("Error loading crew informations", e);
 		}

@@ -33,13 +33,13 @@ public class ConversationServlet extends HttpServlet {
 		String crew = req.getParameter("crew");
 		String crewId = configuration.getString(crew + ".crew-id");
 
-		List<List<Message>> conversations = new CrewResources()
-				.getConversations(authorizationFactory.get(configuration.getString(crew + ".player-id")), crewId);
+		List<List<Message>> conversations = new CrewResources().getConversations(authorizationFactory.get(crew),
+		        crewId);
 		resp.setContentType("application/json; charset=UTF-8");
 		try (PrintWriter writer = resp.getWriter();) {
 			ObjectMapper mapper = new ObjectMapper();
 			writer.write("{ \"chat_events\" : " + mapper.writeValueAsString(conversations.get(0))
-					+ ", \"server_events\": " + mapper.writeValueAsString(conversations.get(1)) + "}");
+			        + ", \"server_events\": " + mapper.writeValueAsString(conversations.get(1)) + "}");
 		} catch (Exception e) {
 			log.error("Error loading crew conversations", e);
 		}
