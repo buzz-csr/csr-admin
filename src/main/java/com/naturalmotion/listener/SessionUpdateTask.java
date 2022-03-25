@@ -30,7 +30,6 @@ public class SessionUpdateTask extends Thread implements CsrTask {
 				}
 			}
 		}
-
 	}
 
 	@Override
