@@ -19,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.line.api.MessageService;
@@ -110,6 +111,7 @@ public class WildcardDetectorTest {
 		doReturn(null).when(crewResources).getWildcards(any());
 		wildcardDetector.detect();
 		verifyZeroInteractions(messageService);
+		verify(dao).update(Mockito.any());
 	}
 
 	@Test
@@ -117,6 +119,7 @@ public class WildcardDetectorTest {
 		doReturn(dbWildcards(GOLD_STATUS, SILVER_STATUS, BRONZE_STATUS)).when(dao).read(anyString());
 		wildcardDetector.detect();
 		verifyZeroInteractions(messageService);
+		verify(dao).update(Mockito.any());
 	}
 
 	@Test
@@ -127,6 +130,7 @@ public class WildcardDetectorTest {
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker 150% plein");
 		verifyZeroInteractions(messageService);
+		verify(dao).update(Mockito.any());
 	}
 
 	@Test
@@ -137,6 +141,7 @@ public class WildcardDetectorTest {
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker 70% plein");
 		verifyZeroInteractions(messageService);
+		verify(dao).update(Mockito.any());
 	}
 
 	@Test
@@ -148,6 +153,7 @@ public class WildcardDetectorTest {
 		verify(messageService).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getValue().getAltText()).isEqualTo("joker 30% plein");
 		verifyZeroInteractions(messageService);
+		verify(dao).update(Mockito.any());
 	}
 
 	@Test
@@ -158,5 +164,6 @@ public class WildcardDetectorTest {
 		verify(messageService, times(3)).pushMessage(textMessage.capture(), anyString());
 		Assertions.assertThat(textMessage.getAllValues()).hasSize(3);
 		verifyZeroInteractions(messageService);
+		verify(dao).update(Mockito.any());
 	}
 }

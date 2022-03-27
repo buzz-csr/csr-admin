@@ -10,6 +10,7 @@ import com.line.api.MessageServiceImpl;
 import com.linecorp.bot.model.message.Message;
 import com.naturalmotion.database.TOKEN_RARITY;
 import com.naturalmotion.database.dao.TokenDao;
+import com.naturalmotion.database.token.Converter;
 import com.naturalmotion.database.token.Token;
 import com.naturalmotion.line.LineConfiguration;
 import com.naturalmotion.webservice.api.CrewResources;
@@ -36,6 +37,8 @@ public class WildcardDetector {
 
 	private Configuration configuration = new Configuration();
 
+	private Converter converter = new Converter();
+
 	private String lineReplyId;
 
 	public WildcardDetector(String crew) {
@@ -47,12 +50,14 @@ public class WildcardDetector {
 
 	public void detect() {
 		Authorization authorization = authorizationFactory.get(configuration.getString(crew + ".player-id"));
-		detectWilcards(authorization);
+		List<Card> wildcards = detectWilcards(authorization);
+		update(wildcards, authorization);
 	}
 
-	private void detectWilcards(Authorization authorization) {
+	private List<Card> detectWilcards(Authorization authorization) {
+		List<Card> wildcards = null;
 		try {
-			List<Card> wildcards = crewResources.getWildcards(authorization);
+			wildcards = crewResources.getWildcards(authorization);
 			Token read = dao.read(crew);
 
 			if (read != null) {
@@ -63,6 +68,7 @@ public class WildcardDetector {
 		} catch (Exception e) {
 			log.error("Error detecting wilcard changes", e);
 		}
+		return wildcards;
 	}
 
 	private void detectWilcardChanges(com.naturalmotion.database.token.Card dbCard, List<Card> wildcards,
@@ -104,4 +110,15 @@ public class WildcardDetector {
 		return wildcards.stream().filter(x -> x.getRarity().equals(rarity.getNmValue())).findFirst().orElse(null);
 	}
 
+	private void update(List<Card> wildcards, Authorization authorization) {
+		try {
+			Token convert = converter.convert(wildcards, crew);
+
+			if (dao.update(convert) == 0) {
+				dao.insert(convert);
+			}
+		} catch (Exception e) {
+			log.error("Error updating event data", e);
+		}
+	}
 }

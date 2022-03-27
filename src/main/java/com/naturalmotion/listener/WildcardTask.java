@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.naturalmotion.event.WildcardDetector;
-import com.naturalmotion.event.WildcardUpdater;
 import com.naturalmotion.webservice.configuration.Configuration;
 
 public class WildcardTask extends Thread implements CsrTask {
@@ -19,8 +18,6 @@ public class WildcardTask extends Thread implements CsrTask {
 	private Configuration configuration = new Configuration();
 
 	private List<WildcardDetector> wildcardDetector = new ArrayList<>();
-
-	private List<WildcardUpdater> wildcardUpdater = new ArrayList<>();
 
 	private STATE state = STATE.RUNNING;
 
@@ -34,7 +31,6 @@ public class WildcardTask extends Thread implements CsrTask {
 	private void extracted(String x) {
 		if (StringUtils.isNotBlank(x)) {
 			wildcardDetector.add(new WildcardDetector(x));
-			wildcardUpdater.add(new WildcardUpdater(x));
 		}
 	}
 
@@ -46,7 +42,6 @@ public class WildcardTask extends Thread implements CsrTask {
 				if (System.currentTimeMillis() - chrono > TIMEOUT) {
 					chrono = System.currentTimeMillis();
 					wildcardDetector.stream().forEach(x -> x.detect());
-					wildcardUpdater.stream().forEach(x -> x.update());
 				}
 				Thread.sleep(10000);
 			}
