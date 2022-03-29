@@ -55,6 +55,9 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link" ng-class="isTabActive('tchat')" ng-click="changeTab('tchat');loadConversations();" id="tchat-tab" data-toggle="tab" href="#tchat" role="tab" aria-controls="tchat" aria-selected="false">Tchat</a>
       </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" ng-class="isTabActive('jetons')" ng-click="changeTab('jetons');loadConversations();" id="jetons-tab" data-toggle="tab" href="#jetons" role="tab" aria-controls="jetons" aria-selected="false">Jetons</a>
+      </li>
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade" ng-class="isTabPaneActive('players')" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -141,7 +144,7 @@
       </div>
       <div class="tab-pane fade" ng-class="isTabPaneActive('tchat')" id="tchat" role="tabpanel" aria-labelledby="tchat-tab">
             <div class="row">
-                <div class="col-lg-6 col-md-12"">
+                <div class="col-md-12">
                     <div class="tchat-card"  ng-repeat="t in conversations['chat_events'] track by $index">
                         <div class="tchat-card-title">
                             <div class="left">{{t.creationTime | date: 'dd-MM-yyyy hh:mm:ss'}}</div>
@@ -152,7 +155,11 @@
                         <p class="tchat-card-text">{{t.text}}</p>
                     </div>                    
                 </div>
-                <div class="col-lg-6 col-md-12">
+            </div>
+      </div>
+      <div class="tab-pane fade" ng-class="isTabPaneActive('jetons')" id="jetons" role="tabpanel" aria-labelledby="jetons-tab">
+            <div class="row">
+                <div class="col-md-12">
                     <div class="tchat-card"  ng-repeat="t in conversations['server_events'] track by $index" ng-class="t.meta.eventID">
                         <div class="tchat-card-title">
                             <div class="left">{{t.creationTime | date: 'dd-MM-yyyy hh:mm:ss'}}</div>
@@ -175,8 +182,7 @@
                     </div>       
                 </div>
             </div>
-            
-      </div>      
+      </div>    
     </div>
     
     <script type="text/javascript" src="js/jquery-3.5.1.js"></script>

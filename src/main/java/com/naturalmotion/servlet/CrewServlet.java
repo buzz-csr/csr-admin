@@ -61,9 +61,9 @@ public class CrewServlet extends HttpServlet {
 		String crewPlayerId = configuration.getString(crew + ".player-id");
 
 		if ("crews".equals(page)) {
-			getCrewLeaderboard(resp, crewPlayerId);
+			getCrewLeaderboard(resp, crew, crewPlayerId);
 		} else if ("graph".equals(page)) {
-			getCrewGraph(resp, crewPlayerId);
+			getCrewGraph(resp, crew);
 		} else {
 			getMembersList(resp, crewPlayerId);
 		}
@@ -79,10 +79,10 @@ public class CrewServlet extends HttpServlet {
 		}
 	}
 
-	private void getCrewLeaderboard(HttpServletResponse resp, String crew) {
-		Authorization authorization = authorizationFactory.get(crew);
-		List<Crew> crews = crewService.getLeaderCrews(authorization, crew);
-		crews.stream().forEach(x -> x.setActive(x.getId().equals(configuration.getString(crew + ".crew-id"))));
+	private void getCrewLeaderboard(HttpServletResponse resp, String crewId, String playerId) {
+		Authorization authorization = authorizationFactory.get(playerId);
+		List<Crew> crews = crewService.getLeaderCrews(authorization, playerId);
+		crews.stream().forEach(x -> x.setActive(x.getId().equals(configuration.getString(crewId + ".crew-id"))));
 		resp.setContentType("application/json; charset=UTF-8");
 		try (PrintWriter writer = resp.getWriter();) {
 			ObjectMapper mapper = new ObjectMapper();
