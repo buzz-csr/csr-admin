@@ -21,7 +21,7 @@ public class ApplicationListener implements ServletContextListener {
 	private TokenTask tokenTask;
 	private AccountHistoryTask accountHistoryTask;
 	private CrewHistoryTask crewHistoryTask;
-	private SessionUpdateTask session;
+//	private SessionUpdateTask session;
 
 	private Server server;
 
@@ -46,8 +46,8 @@ public class ApplicationListener implements ServletContextListener {
 			crewHistoryTask = new CrewHistoryTask();
 			crewHistoryTask.start();
 
-			session = new SessionUpdateTask();
-			session.start();
+//			session = new SessionUpdateTask();
+//			session.start();
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 
